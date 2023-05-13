@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:krishak_farma/screens/home/my_bids.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../size_config.dart';
 import 'package:krishak_farma/screens/home/components/addproduct.dart';
@@ -50,6 +51,7 @@ class Categories extends StatelessWidget
       //{"icon": "assets/icons/Game Icon.svg", "text": "Game"},
       {"icon": "assets/icons/Market View2.svg", "text": "Market View","key":"3"},
       {"icon": "assets/icons/Discover.svg", "text": " Add Product","key":"4"},
+      {"icon": "assets/icons/Gift Icon.svg", "text": "My Bids", "key": "5"},
     ];
     return Padding(
       padding: EdgeInsets.all(getProportionateScreenWidth(20)),
@@ -91,6 +93,16 @@ class Categories extends StatelessWidget
                MaterialPageRoute(builder: (context)=>AddProduct(txt: '',))
              );
              Fluttertoast.showToast(msg: "Add Product");
+
+                } else if (categories[index]["key"] == "5") // Add product
+                {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => MyBids(
+                                userId: '',
+                              )));
+                  Fluttertoast.showToast(msg: "My Bids");
 
            }
             }

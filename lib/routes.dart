@@ -8,10 +8,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:krishak_farma/MobileAuth/mobile_login.dart';
 import 'package:krishak_farma/MobileAuth/mobile_otp.dart';
+import 'package:krishak_farma/screens/bid_placing/place_bid_screen.dart';
 import 'package:krishak_farma/screens/cart/cart_screen.dart';
 import 'package:krishak_farma/screens/details/details_screen.dart';
 import 'package:krishak_farma/screens/forgot_password/forgot_password_screen.dart';
 import 'package:krishak_farma/screens/home/components/addproduct.dart';
+import 'package:krishak_farma/screens/home/components/flash_deal.dart';
 import 'package:krishak_farma/screens/home/home_screen.dart';
 import 'package:krishak_farma/screens/loginsucessscreen/login_sucess_screen.dart';
 import 'package:krishak_farma/screens/message.dart';
@@ -53,7 +55,5 @@ final Map<String, WidgetBuilder> routes = {
   AddProduct.routeName:(context) =>AddProduct(txt: "",),
   //MainPage.routeName:(context) =>MainPage()
   //Notifications.routeName:(context)=>Notifications()
-  Chat.routeName:(context)=>Chat(),
-
-
+  Chat.routeName: (context) => Chat(),
 };

@@ -22,7 +22,18 @@ class Body extends StatelessWidget {
             DiscountBanner(),
             Categories(),
             SizedBox(height: getProportionateScreenWidth(10)),
-            EcommerceImage(),
+            Padding(
+              padding: EdgeInsets.all(35),
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    EcommerceImage(),
+                  ],
+                ),
+              ),
+            ),
             SizedBox(height: getProportionateScreenWidth(30)),
            PopularProducts(),
             SizedBox(height: getProportionateScreenWidth(30)),

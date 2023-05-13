@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:krishak_farma/MobileAuth/mobile_login.dart';
+import 'package:krishak_farma/screens/profile/components/privacy_policy.dart';
 
 
 import '../../../models/user_model.dart';
@@ -81,6 +82,19 @@ class _BodyState extends State<Body> {
               // Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>MobileLogin()), (route) => false)
               Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>SignInScreen()), (route) => false)
             }
+          ),
+          GestureDetector(
+            child: ProfileMenu(
+              text: "Privacy Policy",
+              icon: "assets/icons/privacypolicy.svg",
+              //  press: () {
+              //    _launched = _launchInBrowser(toLaunch);
+              //
+              // },
+              press: () => Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) => PrivacyPolicy()),
+              ),
+            ),
           ),
         ],
       ),

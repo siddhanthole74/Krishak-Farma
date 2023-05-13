@@ -2614,6 +2614,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dialog_flowtter/dialog_flowtter.dart';
 import 'package:dotted_border/dotted_border.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -2652,10 +2653,14 @@ class _AddProductState extends State<AddProduct> {
   final controllerMobileNo = TextEditingController();
   final controllerLocation = TextEditingController();
   final controllerDealDate = TextEditingController();
-  DateTime startBidingDate = new DateTime.now();
-  DateTime endBidingDate = new DateTime.now();
+  // DateTime startBidingDate = new DateTime.now();
+  // DateTime endBidingDate = new DateTime.now();
+
+  String startBidingDate = "";
+  String endBidingDate = "";
   TimeOfDay startTime = new TimeOfDay.now();
   TimeOfDay endTime = new TimeOfDay.now();
+  var myDateFormat = DateFormat('d-MM-yyyy');
 
   final box = Hive.box<Add_data>('data');
   DateTime date = new DateTime.now();
@@ -2858,6 +2863,19 @@ class _AddProductState extends State<AddProduct> {
       width: 340,
       child: Column(
         children: [
+
+          SizedBox(height: 30),
+          Location(),
+          SizedBox(height: 30),
+          Name(), // for name
+          SizedBox(height: 30),
+          Product(), // for select the product
+          SizedBox(height: 30),
+          Quantity(), // for quantity of product
+          // for location of farmer
+          SizedBox(height: 30),
+          TakeMobileNo(),
+          //finalloc()
           SizedBox(height: 20),
           Padding(
             padding: const EdgeInsets.all(8.0),
@@ -2873,18 +2891,6 @@ class _AddProductState extends State<AddProduct> {
             ),
           ),
           SizedBox(height: 30),
-          Location(),
-          SizedBox(height: 30),
-          Name(), // for name
-          SizedBox(height: 30),
-          Product(), // for select the product
-          SizedBox(height: 30),
-          Quantity(), // for quantity of product
-          // for location of farmer
-          //finalloc(),
-          SizedBox(height: 30),
-          date_time(),
-          SizedBox(height: 30),
           start_date(),
           SizedBox(height: 30),
           startBidingTime(),
@@ -2892,8 +2898,8 @@ class _AddProductState extends State<AddProduct> {
           end_date(),
           SizedBox(height: 30),
           endBidingTime(),
-          SizedBox(height: 30),
-          TakeMobileNo(),
+
+
           // SizedBox(height: 30),
           // Image1(),
           // SizedBox(height: 30),
@@ -2911,6 +2917,9 @@ class _AddProductState extends State<AddProduct> {
   }
 
   GestureDetector save() {
+    final FirebaseAuth auth = FirebaseAuth.instance;
+    final User? user = auth.currentUser;
+    final userId = user!.uid;
     return GestureDetector(
       onTap: () {
         final products = Products(
@@ -2925,6 +2934,8 @@ class _AddProductState extends State<AddProduct> {
           endTime: endTime.format(context),
           location: widget.txt,
           dealDate: date,
+            userId: userId,
+            price: []
         );
         createProduct(products);
 
@@ -3132,10 +3143,6 @@ class _AddProductState extends State<AddProduct> {
   //           mobileno: int.parse(controllerMobileNo.text),
   //           //location:
   //           //dealDate:
-  //
-  //
-  //
-  //
   //         );
   //         createProduct(products);
   //         Navigator.pop(context);
@@ -3180,14 +3187,16 @@ class _AddProductState extends State<AddProduct> {
       child: TextButton(
         onPressed: () async {
           DateTime? newDate = await showDatePicker(
-              context: context, initialDate: startBidingDate, firstDate: DateTime(2020), lastDate: DateTime(2100));
+              context: context, initialDate: DateTime.now(), firstDate: DateTime(2020), lastDate: DateTime(2100));
           if (newDate == Null) return;
           setState(() {
-            startBidingDate = newDate!;
+            // print("Sahsdkfdkjbf " + myDateFormat.format(newDate!) as DateTime);
+            // print("kjsfkrskfur : " + newDate.toString());
+            startBidingDate = myDateFormat.format(newDate!);
           });
         },
         child: Text(
-          'Start Biding date :  ${startBidingDate.day}/${startBidingDate.month}/${startBidingDate.year}',
+          'Start Biding date :  $startBidingDate',
           style: TextStyle(
             fontSize: 15,
             color: Colors.black,
@@ -3206,14 +3215,19 @@ class _AddProductState extends State<AddProduct> {
       child: TextButton(
         onPressed: () async {
           DateTime? newDate = await showDatePicker(
-              context: context, initialDate: endBidingDate, firstDate: DateTime(2020), lastDate: DateTime(2100));
+              context: context, initialDate: DateTime.now(), firstDate: DateTime(2020), lastDate: DateTime(2100));
+
           if (newDate == Null) return;
+          print(newDate.toString());
           setState(() {
-            endBidingDate = newDate!;
+            endBidingDate = myDateFormat.format(newDate!);
+            print(endBidingDate);
+            // endBiddindDate = endBidingDate.
           });
+          print("akjddsc" + endBidingDate);
         },
         child: Text(
-          'End Biding date :  ${endBidingDate.day}/${endBidingDate.month}/${endBidingDate.year}',
+          'End Biding date :  $endBidingDate',
           style: TextStyle(
             fontSize: 15,
             color: Colors.black,
@@ -3231,7 +3245,6 @@ class _AddProductState extends State<AddProduct> {
 
   Widget startBidingTime() {
     return Container(
-      
       alignment: Alignment.bottomLeft,
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10), border: Border.all(width: 2, color: Color(0xffC5C5C5))),
@@ -3241,7 +3254,6 @@ class _AddProductState extends State<AddProduct> {
           TimeOfDay? newTime = await showTimePicker(
             context: context,
             initialTime: stringToTimeOfDay(startTime.format(context)),
-            
           );
           if (newTime != null) {
             setState(() {
@@ -3414,7 +3426,7 @@ class _AddProductState extends State<AddProduct> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: TextField(
-        
+
           //focusNode: ex,
           //autofocus: false,
           //initialValue: 'your initial text',
@@ -3445,15 +3457,15 @@ class _AddProductState extends State<AddProduct> {
             //   icon: CustomSurffixIcon(svgIcon: "assets/icons/Discover.svg"),
             // )
             //suffixIcon: CustomSurffixIcon(svgIcon: "assets/icons/Discover.svg",),
-            // suffixIcon: IconButton(
-            //     icon: SvgPicture.asset(
-            //       "assets/icons/Discover.svg",
-            //     ),
-            //     onPressed: () {
-            //       Navigator.of(context).pushReplacement(
-            //         MaterialPageRoute(builder: (context) => LocationPage()),
-            //       );
-            //     }),
+            suffixIcon: IconButton(
+                icon: SvgPicture.asset(
+                  "assets/icons/Locationpoint.svg",
+                ),
+                onPressed: () {
+                  Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(builder: (context) => Locationautofill()),
+                  );
+                }),
           ),
           onTap: () {
             Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => Locationautofill()));
@@ -3648,10 +3660,14 @@ class Products {
   final String mobileno;
   final String location;
   final DateTime dealDate;
-  final DateTime startBidingDate;
-  final DateTime endBidingDate;
+  // final DateTime startBidingDate;
+  // final DateTime endBidingDate;
+  final String startBidingDate;
+  final String endBidingDate;
   final String startTime;
   final String endTime;
+  final String userId;
+  final List price;
 
   Products(
       {required this.name,
@@ -3664,7 +3680,9 @@ class Products {
       required this.endBidingDate,
       required this.startTime,
       required this.endTime,
-      required this.imageUrls});
+      required this.imageUrls,
+      required this.userId,
+      required this.price});
 
   Map<String, dynamic> toJson() => {
         'name': name,
@@ -3677,6 +3695,8 @@ class Products {
         'Start_Biding_Date': startBidingDate.toString(),
         'End_Biding_Date': endBidingDate.toString(),
         'Start_time': startTime.toString(),
-        'End_time': endTime.toString()
+        'End_time': endTime.toString(),
+        'userId': userId,
+        'price': price
       };
 }

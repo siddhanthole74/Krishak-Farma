@@ -17,9 +17,6 @@ class UserModel {
       firstName: map['firstName'],
       secondName: map['secondName']
     );
-
-
-
   }
 
   // sending data to the server

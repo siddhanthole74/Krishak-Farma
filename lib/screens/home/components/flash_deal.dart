@@ -1,4 +1,6 @@
-//import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:async';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -8,7 +10,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
-
+import 'package:krishak_farma/screens/bid_placing/place_bid_screen.dart';
 
 import 'addproduct.dart';
 import 'ecommerceimages.dart';
@@ -74,7 +76,7 @@ import 'icon_but_with_cnt.dart';
 //                             crossAxisAlignment: CrossAxisAlignment.start,
 //                             mainAxisAlignment: MainAxisAlignment.center,
 //                             children: [
-//                              
+//
 //                               Text("Hello world"),
 //                             ],
 //                           ),
@@ -234,61 +236,86 @@ import 'icon_but_with_cnt.dart';
 //
 //   }
 
-String name="";
+String name = "";
+int maxLength = 3;
 class FlashDeal extends StatefulWidget {
   //var product;
 
   FlashDeal({Key? key}) : super(key: key);
-
-
 
   @override
   State<FlashDeal> createState() => _FlashDealState();
 }
 
 class _FlashDealState extends State<FlashDeal> {
-
-
-
-
-
-
-
-
+  final startDateTime = DateTime.now();
+  DateTime endDateTime = DateTime(2023, 4, 10, 10, 0, 0);
+  late Timer _timer;
+  Duration _duration = Duration();
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-        backgroundColor: Colors.deepOrangeAccent,
-        title: Card(
-          child: TextField(
-            decoration: InputDecoration(
-              prefixIcon: Icon(Icons.search),
-              hintText: 'Serch for product'
-            ),
-            onChanged: (val){
-              setState(() {
-                name=val;
-              });
-            },
-          ),
-        )
-         // title: Text("Flash Deal"),
+  void initState() {
+    super.initState();
+    _timer = Timer.periodic(const Duration(seconds: 1), _updateCountdown);
+    _updateCountdown(_timer);
+  }
 
-    ),
+  @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
+  }
+
+  void _updateCountdown(Timer timer) {
+    setState(() {
+      final now = DateTime.now();
+      if (now.isAfter(endDateTime)) {
+        _duration = const Duration();
+        _timer.cancel();
+      } else {
+        _duration = endDateTime.difference(now);
+        print("jnfkjnjf " + _duration.toString());
+      }
+    });
+  }
+  @override
+  Widget build(BuildContext context) {
+    DateFormat inputFormat = DateFormat('dd-MM-yyyy hh:mm a');
+    return Scaffold(
+      appBar: AppBar(
+          backgroundColor: Colors.deepOrangeAccent,
+          title: Card(
+            child: TextField(
+              //maxLength: maxLength,
+              decoration: InputDecoration(
+
+                  prefixIcon: Icon(Icons.search,), hintText: 'Search for product',),
+
+              onChanged: (val) {
+                setState(() {
+                  name = val;
+
+                });
+              },
+            ),
+          )
+          // title: Text("Flash Deal"),
+
+          ),
       body: Container(
         child: StreamBuilder(
           stream: FirebaseFirestore.instance.collection('products').snapshots(),
-          builder: (context,AsyncSnapshot<QuerySnapshot> snapshot){
-
-            if(snapshot.hasData){
+          builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+            
+            if (snapshot.hasData) {
               return ListView.builder(
-                itemCount: snapshot.data!.docs.length,
-                  itemBuilder: (context,index){
-                    var data=snapshot.data!.docs[index].data() as Map<String,dynamic>;
-                    if(name.isEmpty)
-                    {
+                  itemCount: snapshot.data!.docs.length,
+                  itemBuilder: (context, index) {
+                    endDateTime = inputFormat.parse(
+                        "${snapshot.data?.docs[index]['End_Biding_Date']} ${snapshot.data?.docs[index]['End_time']}");
+                    var data = snapshot.data!.docs[index].data() as Map<String, dynamic>;
+                    if (name.isEmpty) {
+                      print("Lenght : ${snapshot.data!.docs.length}");
                       return Padding(
                         padding: const EdgeInsets.all(10.0),
                         child: Container(
@@ -296,10 +323,14 @@ class _FlashDealState extends State<FlashDeal> {
                           padding: const EdgeInsets.all(10),
                           // height: 200,
                           // color: Colors.amberAccent,
-                          height: MediaQuery.of(context).size.height *1/3,
-                          width: MediaQuery.of(context).size.height *1/3,
-                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(30),gradient: LinearGradient(colors: [Colors.orange,Colors.deepOrangeAccent],begin: Alignment.topLeft,end:Alignment.bottomRight)),
-
+                          height: MediaQuery.of(context).size.height * 1 / 2.7,
+                          width: MediaQuery.of(context).size.height * 1 / 3,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(30),
+                              gradient: LinearGradient(
+                                  colors: [Colors.orange, Colors.deepOrangeAccent],
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight)),
 
                           child: SingleChildScrollView(
                             child: Column(
@@ -307,135 +338,333 @@ class _FlashDealState extends State<FlashDeal> {
 
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                IconBtnWithCounter(
-                                    svgSrc: "assets/icons/User.svg",
-                                    press: () {
-                                      //Navigator.push(context, MaterialPageRoute(builder:(context)=> CartScreen()));
-                                      //Navigator.push(context, MaterialPageRoute(builder:(context)=> CustomAppBar(rating: 100.0)));
-                                      //Navigator.pushNamed(context, AddProduct.routeName);
-                                    }
+                                Row(
+                                  children: [
+                                    IconBtnWithCounter(
+                                        svgSrc: "assets/icons/User.svg",
+                                        press: () {
+                                          //Navigator.push(context, MaterialPageRoute(builder:(context)=> CartScreen()));
+                                          //Navigator.push(context, MaterialPageRoute(builder:(context)=> CustomAppBar(rating: 100.0)));
+                                          //Navigator.pushNamed(context, AddProduct.routeName);
+                                        }),
+                                    SizedBox(
+                                      width: 30,
+                                    ),
+                                  ],
                                 ),
                                 Text(
-                                  "Name :"+snapshot.data?.docs[index]['name'],
-                                  style: TextStyle(color: Colors.white,fontSize: 20),
+                                  "Name : " + snapshot.data?.docs[index]['name'],
+                                  style: TextStyle(color: Colors.white, fontSize: 17),
                                 ),
                                 const SizedBox(
                                   height: 5,
                                 ),
                                 Text(
-                                  "Product :"+snapshot.data?.docs[index]['Product'],
-                                  style: TextStyle(color: Colors.white,fontSize: 20),
+                                  "Product : " + snapshot.data?.docs[index]['Product'],
+                                  style: TextStyle(color: Colors.white, fontSize: 17),
                                 ),
                                 const SizedBox(
                                   height: 5,
                                 ),
                                 Text(
-                                  "Quantity in KG :"+snapshot.data?.docs[index]['Quantity in KG'],
-                                  style: TextStyle(color: Colors.white,fontSize: 20),
+                                  "${"Quantity : " + snapshot.data?.docs[index]['Quantity in KG']} kg",
+                                  style: TextStyle(color: Colors.white, fontSize: 17),
                                 ),
+                                const SizedBox(
+                                  height: 5,
+                                ),
+                               
+                                // Text(
+                                //   "Phone number : " + snapshot.data?.docs[index]['Mobileno'],
+                                //   style: TextStyle(color: Colors.white, fontSize: 17),
+                                // ),
                                 const SizedBox(
                                   height: 5,
                                 ),
                                 Text(
-                                  "Location :"+snapshot.data?.docs[index]['Location'],
-                                  style: TextStyle(color: Colors.white,fontSize: 20),
+                                  "Location : " + snapshot.data?.docs[index]['Location'],
+                                  style: TextStyle(color: Colors.white, fontSize: 17),
                                 ),
+
+
                                 const SizedBox(
                                   height: 5,
                                 ),
+
                                 Text(
-                                  "Contact no :"+snapshot.data?.docs[index]['Mobileno'],
-                                  style: TextStyle(color: Colors.white,fontSize: 20),
+                                  "End Bidding Date : ${snapshot.data?.docs[index]['End_Biding_Date']}",
+                                  style: TextStyle(color: Colors.white, fontSize: 17),
                                 ),
+
+                                // Text(
+                                //   "Time Remaining : ${_duration.inDays}d : ${_duration.inHours.remainder(24)}h : ${_duration.inMinutes.remainder(60)}m : ${_duration.inSeconds.remainder(60)}s",
+                                //   style: TextStyle(color: Colors.white, fontSize: 17),
+                                // ),
+                                // Text(
+                                //   "Deal Date : " +
+                                //       (snapshot.data?.docs[index]['Deal_Date']).toString().replaceAll("00:00:00.000", ""),
+                                //   //timeago.format(document.data['tripDoc']['docCreatedOn'].toDate())
+                                //   // "Deal Date : "+DateFormat('dd-MM-yyyy KK:mm:ss a').format(snapshot.data?.docs[index]['Deal_Date'].toDate()),
+                                //   // "sahil",
+                                //   style: TextStyle(color: Colors.white, fontSize: 17),
+                                // ),
                                 const SizedBox(
-                                  height: 5,
-                                ),
-                                Text(
-                                  //"Deal Date :"+(snapshot.data?.docs[index]['Deal_Date']),
-                                  //timeago.format(document.data['tripDoc']['docCreatedOn'].toDate())
-                                  "Deal Date : "+DateFormat('dd-MM-yyyy KK:mm:ss a').format(snapshot.data?.docs[index]['Deal_Date'].toDate()),
-                                  style: TextStyle(color: Colors.white,fontSize: 20),
-                                ),
-                                const SizedBox(
-                                  height: 5,
+                                  height: 25,
                                 ),
                                 Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-
-                                    // GestureDetector(
-                                    //   onTap: () {
-                                    //
-                                    //   },
-                                    //   child: Row(
-                                    //     children: [
-                                    //       Icon(
-                                    //         Icons.shopping_cart,
-                                    //         color: Colors.red[700],
-                                    //       ),
-                                    //     ],
-                                    //   ),
-                                    // ),
-                                    IconBtnWithCounter(
-                                        svgSrc: "assets/icons/Cart Icon.svg",
-                                        press: () {},
+                                    SizedBox(
+                                      width: 30,
+                                    ),
+                                    // Container(
+                                    //     height: 80,
+                                    //     width: 80,
+                                    //     child: Image.network(
+                                    //       snapshot.data?.docs[index]['images'][0],
+                                    //       fit: BoxFit.cover,
+                                    //     )),
+                                    Center(
+                                      child: GestureDetector(
+                                          onTap: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) => PlaceBidScreen(
+                                                        productId: snapshot.data!.docs[index].id,
+                                                        index: index,
+                                                      )),
+                                            );
+                                          },
+                                        
+                                          child: Container(
+                                            height: 40,
+                                            width: 60,
+                                            decoration: const BoxDecoration(
+                                                // gradient: LinearGradient(
+                                                //   begin: Alignment.topLeft,
+                                                //   end: Alignment.bottomRight,
+                                                //   colors: [
+                                                //     Color.fromRGBO(255, 114, 58, 1),
+                                                //     Color.fromRGBO(245, 177, 95, 1),
+                                                //     // Color.fromRGBO(218, 125, 49, 1),
+                                                //     // Color.fromRGBO(215, 101, 52, 1)
+                                                //   ],
+                                                // ),
+                                                color: Colors.orange,
+                                                borderRadius: BorderRadius.all(Radius.circular(6))),
+                                            child: Center(
+                                                child: Text(
+                                              "Bid",
+                                              style: TextStyle(
+                                                  color: Colors.white, fontSize: 18, fontWeight: FontWeight.w500),
+                                            )),
+                                          )),
+                                    ),
+                                    SizedBox(
+                                      width: 30,
                                     ),
                                   ],
                                 )
-
-
-
-
-
                               ],
                             ),
                           ),
                         ),
                       );
                     }
-                    if(data['Product'].toString().startsWith(name.toLowerCase()) || data['Product'].toString().startsWith(name.toUpperCase()))
-                    {
-                      return Card(
-                        //color: Colors.deepOrangeAccent,
-                        shape:RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)) ,
+                    // return Card(
+                    //   //color: Colors.deepOrangeAccent,
+                    //   shape:RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)) ,
+                    //
+                    //   //borderOnForeground: true,
+                    //   elevation: 4,
+                    //   child: ListTile(
+                    //     title: Text(
+                    //       data['name'],
+                    //       style: TextStyle(color: Colors.deepOrangeAccent,fontSize: 18),
+                    //
+                    //     ),
+                    //     subtitle: Text(
+                    //       data['Product'],
+                    //     ),
+                    //     //trailing: Icon(Icons.arrow_forward_ios),
+                    //     trailing: IconBtnWithCounter(
+                    //         svgSrc: "assets/icons/arrow_right.svg",
+                    //         press: () {
+                    //           Navigator.pushReplacement(context, MaterialPageRoute(builder:(context)=> ExtendedSearch()));
+                    //         }
+                    //     ),
+                    //     leading: IconBtnWithCounter(
+                    //         svgSrc: "assets/icons/User.svg",
+                    //         press: () {
+                    //
+                    //         }
+                    //     ),
+                    //     //iconColor: Colors.deepOrangeAccent,
+                    //     textColor: Colors.deepOrangeAccent,
+                    //     //tileColor: Colors.deepOrangeAccent,
+                    //     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                    //
+                    //
+                    //   ),
+                    // );
+                    if (data['Product'].toString().startsWith(name.toLowerCase()) ||
+                        data['Product'].toString().startsWith(name.toUpperCase())) {
+                      return  Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: Container(
+                          //margin: const EdgeInsets.all(10),
+                          padding: const EdgeInsets.all(10),
+                          // height: 200,
+                          // color: Colors.amberAccent,
+                          height: MediaQuery.of(context).size.height * 1 / 2.7,
+                          width: MediaQuery.of(context).size.height * 1 / 3,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(30),
+                              gradient: LinearGradient(
+                                  colors: [Colors.orange, Colors.deepOrangeAccent],
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight)),
 
-                        //borderOnForeground: true,
-                        elevation: 4,
-                        child: ListTile(
-                          title: Text(
-                            data['name'],
-                            style: TextStyle(color: Colors.deepOrangeAccent,fontSize: 18),
+                          child: Column(
+                            //mainAxisAlignment: MainAxisAlignment.center,
 
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  IconBtnWithCounter(
+                                      svgSrc: "assets/icons/User.svg",
+                                      press: () {
+                                        //Navigator.push(context, MaterialPageRoute(builder:(context)=> CartScreen()));
+                                        //Navigator.push(context, MaterialPageRoute(builder:(context)=> CustomAppBar(rating: 100.0)));
+                                        //Navigator.pushNamed(context, AddProduct.routeName);
+                                      }),
+                                  SizedBox(
+                                    width: 30,
+                                  ),
+                                ],
+                              ),
+
+                              Text(
+                                "Name : " + snapshot.data?.docs[index]['name'],
+                                style: TextStyle(color: Colors.white, fontSize: 17),
+                              ),
+                              const SizedBox(
+                                height: 5,
+                              ),
+                              Text(
+                                "Product : " + snapshot.data?.docs[index]['Product'],
+                                style: TextStyle(color: Colors.white, fontSize: 17),
+                              ),
+                              const SizedBox(
+                                height: 5,
+                              ),
+                              Text(
+                                "${"Quantity : " + snapshot.data?.docs[index]['Quantity in KG']} kg",
+                                style: TextStyle(color: Colors.white, fontSize: 17),
+                              ),
+                              const SizedBox(
+                                height: 5,
+                              ),
+
+                              // Text(
+                              //   "Phone number : " + snapshot.data?.docs[index]['Mobileno'],
+                              //   style: TextStyle(color: Colors.white, fontSize: 17),
+                              // ),
+                              const SizedBox(
+                                height: 5,
+                              ),
+                              Text(
+                                "Location : " + snapshot.data?.docs[index]['Location'],
+                                style: TextStyle(color: Colors.white, fontSize: 17),
+                              ),
+
+
+                              const SizedBox(
+                                height: 5,
+                              ),
+
+                              Text(
+                                "End Bidding Date : ${snapshot.data?.docs[index]['End_Biding_Date']}",
+                                style: TextStyle(color: Colors.white, fontSize: 17),
+                              ),
+
+                              // Text(
+                              //   "Time Remaining : ${_duration.inDays}d : ${_duration.inHours.remainder(24)}h : ${_duration.inMinutes.remainder(60)}m : ${_duration.inSeconds.remainder(60)}s",
+                              //   style: TextStyle(color: Colors.white, fontSize: 17),
+                              // ),
+                              // Text(
+                              //   "Deal Date : " +
+                              //       (snapshot.data?.docs[index]['Deal_Date']).toString().replaceAll("00:00:00.000", ""),
+                              //   //timeago.format(document.data['tripDoc']['docCreatedOn'].toDate())
+                              //   // "Deal Date : "+DateFormat('dd-MM-yyyy KK:mm:ss a').format(snapshot.data?.docs[index]['Deal_Date'].toDate()),
+                              //   // "sahil",
+                              //   style: TextStyle(color: Colors.white, fontSize: 17),
+                              // ),
+                              const SizedBox(
+                                height: 25,
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  SizedBox(
+                                    width: 30,
+                                  ),
+                                  // Container(
+                                  //     height: 80,
+                                  //     width: 80,
+                                  //     child: Image.network(
+                                  //       snapshot.data?.docs[index]['images'][0],
+                                  //       fit: BoxFit.cover,
+                                  //     )),
+                                  Center(
+                                    child: GestureDetector(
+                                        onTap: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) => PlaceBidScreen(
+                                                  productId: snapshot.data!.docs[index].id,
+                                                  index: index,
+                                                )),
+                                          );
+                                        },
+
+                                        child: Container(
+                                          height: 40,
+                                          width: 60,
+                                          decoration: const BoxDecoration(
+                                            // gradient: LinearGradient(
+                                            //   begin: Alignment.topLeft,
+                                            //   end: Alignment.bottomRight,
+                                            //   colors: [
+                                            //     Color.fromRGBO(255, 114, 58, 1),
+                                            //     Color.fromRGBO(245, 177, 95, 1),
+                                            //     // Color.fromRGBO(218, 125, 49, 1),
+                                            //     // Color.fromRGBO(215, 101, 52, 1)
+                                            //   ],
+                                            // ),
+                                              color: Colors.orange,
+                                              borderRadius: BorderRadius.all(Radius.circular(6))),
+                                          child: Center(
+                                              child: Text(
+                                                "Bid",
+                                                style: TextStyle(
+                                                    color: Colors.white, fontSize: 18, fontWeight: FontWeight.w500),
+                                              )),
+                                        )),
+                                  ),
+                                  SizedBox(
+                                    width: 30,
+                                  ),
+                                ],
+                              )
+                            ],
                           ),
-                          subtitle: Text(
-                            data['Product'],
-                          ),
-                          //trailing: Icon(Icons.arrow_forward_ios),
-                          trailing: IconBtnWithCounter(
-                              svgSrc: "assets/icons/arrow_right.svg",
-                              press: () {
-                                Navigator.pushReplacement(context, MaterialPageRoute(builder:(context)=> ExtendedSearch()));
-                              }
-                          ),
-                          leading: IconBtnWithCounter(
-                              svgSrc: "assets/icons/User.svg",
-                              press: () {
-
-                              }
-                          ),
-                          //iconColor: Colors.deepOrangeAccent,
-                          textColor: Colors.deepOrangeAccent,
-                          //tileColor: Colors.deepOrangeAccent,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-
-
                         ),
                       );
-
                     }
-
-
 
                     // return Padding(
                     //   padding: const EdgeInsets.all(10.0),
@@ -548,15 +777,11 @@ class _FlashDealState extends State<FlashDeal> {
                     //   ),
                     // );
                     return Container();
-                  }
-              );
-
-            }
-          else
-            {
+                  });
+            } else {
               return Container(
-                  width: MediaQuery.of(context).size.width/1.2,
-                  height: MediaQuery.of(context).size.width/1.2,
+                  width: MediaQuery.of(context).size.width / 1.2,
+                  height: MediaQuery.of(context).size.width / 1.2,
                   //child: CircularProgressIndicator(),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -565,240 +790,43 @@ class _FlashDealState extends State<FlashDeal> {
                         height: 120,
                         width: 120,
                       ),
-                      const SizedBox(width: 16,),
+                      const SizedBox(
+                        width: 16,
+                      ),
                       Expanded(
                           child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Skeleton(width:80),
-                              const SizedBox(height: 8,),
-                              const Skeleton(),
-                              const SizedBox(height: 8,),
-                              const Skeleton(),
-                              const SizedBox(height: 8,),
-                              Row(
-                                children: const[
-                                  Expanded(child: Skeleton()),
-                                  SizedBox(width: 16,),
-                                  Expanded(child: Skeleton()),
-                                ],
-                              )
-
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Skeleton(width: 80),
+                          const SizedBox(
+                            height: 8,
+                          ),
+                          const Skeleton(),
+                          const SizedBox(
+                            height: 8,
+                          ),
+                          const Skeleton(),
+                          const SizedBox(
+                            height: 8,
+                          ),
+                          Row(
+                            children: const [
+                              Expanded(child: Skeleton()),
+                              SizedBox(
+                                width: 16,
+                              ),
+                              Expanded(child: Skeleton()),
                             ],
-                          ))
+                          )
+                        ],
+                      ))
                     ],
-                  )
-              );
+                  ));
             }
           },
         ),
       ),
-      
-
     );
   }
 }
 
-
-class ExtendedSearch extends StatefulWidget {
-  const ExtendedSearch({Key? key}) : super(key: key);
-
-  @override
-  State<ExtendedSearch> createState() => _ExtendedSearchState();
-}
-
-class _ExtendedSearchState extends State<ExtendedSearch> {
-  @override
-  Widget build(BuildContext context) {
-   return Scaffold(
-     appBar: AppBar(
-         backgroundColor: Colors.deepOrangeAccent,
-
-       title: Text("Flash Deal"),
-       actions: [
-         // IconBtnWithCounter(
-         //     svgSrc: "assets/icons/arrow_right.svg",
-         //     press: () {
-         //      // Navigator.pushReplacement(context, MaterialPageRoute(builder:(context)=> FlashDeal()));
-         //     }
-         // ),
-       ],
-
-     ),
-     body: Container(
-       child: StreamBuilder(
-         stream: FirebaseFirestore.instance.collection('products').snapshots(),
-         builder: (context,AsyncSnapshot<QuerySnapshot> snapshot){
-
-           if(snapshot.hasData){
-             return ListView.builder(
-                 itemCount: snapshot.data!.docs.length,
-                 itemBuilder: (context,index){
-                   var data=snapshot.data!.docs[index].data() as Map<String,dynamic>;
-                   if(data['Product'].toString().startsWith(name.toLowerCase()) || data['Product'].toString().startsWith(name.toUpperCase()))
-                     {
-                       return Padding(
-                         padding: const EdgeInsets.all(10.0),
-                         child: Container(
-//margin: const EdgeInsets.all(10),
-                           padding: const EdgeInsets.all(10),
-// height: 200,
-// color: Colors.amberAccent,
-                           height: MediaQuery.of(context).size.height *1/3,
-                           width: MediaQuery.of(context).size.height *1/3,
-                           decoration: BoxDecoration(borderRadius: BorderRadius.circular(30),gradient: LinearGradient(colors: [Colors.orange,Colors.deepOrangeAccent],begin: Alignment.topLeft,end:Alignment.bottomRight)),
-
-
-                           child: SingleChildScrollView(
-                             child: Column(
-//mainAxisAlignment: MainAxisAlignment.center,
-
-                               crossAxisAlignment: CrossAxisAlignment.start,
-                               children: [
-                                 IconBtnWithCounter(
-                                     svgSrc: "assets/icons/User.svg",
-                                     press: () {
-//Navigator.push(context, MaterialPageRoute(builder:(context)=> CartScreen()));
-//Navigator.push(context, MaterialPageRoute(builder:(context)=> CustomAppBar(rating: 100.0)));
-//Navigator.pushNamed(context, AddProduct.routeName);
-                                     }
-                                 ),
-                                 Text(
-                                   "Name :"+data['name'],
-                                   style: TextStyle(color: Colors.white,fontSize: 20),
-                                 ),
-                                 const SizedBox(
-                                   height: 5,
-                                 ),
-                                 Text(
-                                   "Product :"+data['Product'],
-                                   style: TextStyle(color: Colors.white,fontSize: 20),
-                                 ),
-                                 const SizedBox(
-                                   height: 5,
-                                 ),
-                                 Text(
-                                   "Quantity in KG :"+data['Quantity in KG'],
-                                   style: TextStyle(color: Colors.white,fontSize: 20),
-                                 ),
-                                 const SizedBox(
-                                   height: 5,
-                                 ),
-                                 Text(
-                                   "Location :"+data['Location'],
-                                   style: TextStyle(color: Colors.white,fontSize: 20),
-                                 ),
-                                 const SizedBox(
-                                   height: 5,
-                                 ),
-                                 Text(
-                                   "Contact no :"+data['Mobileno'],
-                                   style: TextStyle(color: Colors.white,fontSize: 20),
-                                 ),
-                                 const SizedBox(
-                                   height: 5,
-                                 ),
-                                 Text(
-//"Deal Date :"+(snapshot.data?.docs[index]['Deal_Date']),
-//timeago.format(document.data['tripDoc']['docCreatedOn'].toDate())
-                                   "Deal Date : "+DateFormat('dd-MM-yyyy KK:mm:ss a').format(data['Deal_Date'].toDate()),
-                                   style: TextStyle(color: Colors.white,fontSize: 20),
-                                 ),
-                                 const SizedBox(
-                                   height: 5,
-                                 ),
-                                 Row(
-                                   mainAxisAlignment: MainAxisAlignment.end,
-                                   crossAxisAlignment: CrossAxisAlignment.center,
-                                   children: [
-
-// GestureDetector(
-//   onTap: () {
-//
-//   },
-//   child: Row(
-//     children: [
-//       Icon(
-//         Icons.shopping_cart,
-//         color: Colors.red[700],
-//       ),
-//     ],
-//   ),
-// ),
-                                     IconBtnWithCounter(
-                                         svgSrc: "assets/icons/Cart Icon.svg",
-                                         press: () {
-//Navigator.push(context, MaterialPageRoute(builder:(context)=> CartScreen()));
-//Navigator.push(context, MaterialPageRoute(builder:(context)=> CustomAppBar(rating: 100.0)));
-//Navigator.pushNamed(context, AddProduct.routeName);
-                                         }
-                                     ),
-                                   ],
-                                 )
-
-
-
-
-
-                               ],
-                             ),
-                           ),
-                         ),
-                       );
-                     }
-
-
-
-
-
-
-
-                   return Container();
-                 }
-             );
-
-           }
-           else
-           {
-             return Container(
-                 width: MediaQuery.of(context).size.width/1.2,
-                 height: MediaQuery.of(context).size.width/1.2,
-                 //child: CircularProgressIndicator(),
-                 child: Row(
-                   crossAxisAlignment: CrossAxisAlignment.start,
-                   children: [
-                     const Skeleton(
-                       height: 120,
-                       width: 120,
-                     ),
-                     const SizedBox(width: 16,),
-                     Expanded(
-                         child: Column(
-                           crossAxisAlignment: CrossAxisAlignment.start,
-                           children: [
-                             const Skeleton(width:80),
-                             const SizedBox(height: 8,),
-                             const Skeleton(),
-                             const SizedBox(height: 8,),
-                             const Skeleton(),
-                             const SizedBox(height: 8,),
-                             Row(
-                               children: const[
-                                 Expanded(child: Skeleton()),
-                                 SizedBox(width: 16,),
-                                 Expanded(child: Skeleton()),
-                               ],
-                             )
-
-                           ],
-                         ))
-                   ],
-                 )
-             );
-           }
-         },
-       ),
-     ),
-   );
-  }
-}
