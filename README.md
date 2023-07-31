@@ -1,7 +1,7 @@
 # krishak_farma
 # Link to downlaod the Krishak Farma 
 https://siddhant-vijay-hole.itch.io/krishak-farma
-A new Flutter project.
+
 
 ## Getting Started
 
