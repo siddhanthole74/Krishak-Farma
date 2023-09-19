@@ -1,13 +1,4 @@
-
-
-
-
-
-//import 'dart:js';
-
 import 'package:flutter/cupertino.dart';
-import 'package:krishak_farma/MobileAuth/mobile_login.dart';
-import 'package:krishak_farma/MobileAuth/mobile_otp.dart';
 import 'package:krishak_farma/screens/bid_placing/place_bid_screen.dart';
 import 'package:krishak_farma/screens/cart/cart_screen.dart';
 import 'package:krishak_farma/screens/details/details_screen.dart';

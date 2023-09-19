@@ -33,10 +33,10 @@ dependencies:
     sdk: flutter
   fluttertoast: ^8.1.1
   firebase_messaging: ^14.1.3
-  flutter_local_notifications: ^12.0.4
-  geolocator: ^8.2.0
+  flutter_local_notifications: ^15.1.1
+  geolocator: ^10.0.1
   geocoding: ^2.0.4
-  uuid: ^3.0.6
+  uuid: ^4.0.0
   firebase_database:
 
 
@@ -56,31 +56,33 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
-  flutter_svg: ^1.1.6  # help us to use SVG in our app
+  flutter_svg: ^2.0.7  # help us to use SVG in our app
   provider: ^6.0.0 # for State management
   firebase_core: ^2.3.0
   firebase_auth: ^4.1.5
   email_auth: ^1.0.0
   lottie: ^2.1.0
-  google_sign_in: ^5.0.3
-  font_awesome_flutter: ^9.0.0
+  google_sign_in: ^6.1.5
+  font_awesome_flutter: ^10.5.0
   cloud_firestore: ^4.1.0
   firebase_analytics: ^10.0.6
-  syncfusion_flutter_charts: ^20.2.44
+  syncfusion_flutter_charts: ^23.1.36
   hive: ^2.2.3
   hive_flutter: ^1.1.0
-  intl: ^0.17.0
+  intl: ^0.18.1
   dialog_flowtter:
   marquee: ^2.2.3
   firebase_storage:
   flutter_secure_storage:
-  pinput: ^2.2.12
+  pinput: ^3.0.1
   flutter_share: ^2.0.0
   google_maps_flutter: ^2.2.5
   flutter_google_places: ^0.3.0
   http: ^0.13.5
   image_picker: ^0.8.7
   dotted_border: ^2.0.0+3
+  country_picker: ^2.0.18
+  shared_preferences: ^2.0.15
 
 
 
@@ -100,7 +102,7 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^2.0.0
-  hive_generator: ^1.1.3
+  hive_generator: ^2.0.1
   build_runner: ^2.2.0
 
 
@@ -121,6 +123,7 @@ flutter:
     - assets/images/
     - assets/icons/
     - assets/raw/
+    - assets/AuthImages/
 fonts:
   - family: PatrickHand
     fonts:

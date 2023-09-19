@@ -2,9 +2,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:krishak_farma/MobileAuth/mobile_login.dart';
+import 'package:krishak_farma/MobileAuth/mobile_register.dart';
+import 'package:krishak_farma/MobileAuth/otp_screen.dart';
+import 'package:krishak_farma/MobileAuth/userinformationscreen.dart';
 import 'package:krishak_farma/screens/home/home_screen.dart';
-
 import '../../constants.dart';
 import '../../size_config.dart';
 import '../sign_in/sign_in_screen.dart';
@@ -38,17 +39,18 @@ class _SplashScreenState extends State<SplashScreen> {
   _navigatetohome()async
   {
     await Future.delayed(Duration(milliseconds: 3000),(){});// await for 1.5 seconds
+    Navigator.pushReplacement(context, MaterialPageRoute(builder:(context)=> RegisterScreen()));
+    // if(isLogin==true)
+    // {
+    //   Navigator.pushReplacement(context, MaterialPageRoute(builder:(context)=> HomeScreen()));
+    //   //Navigator.pushReplacement(context, MaterialPageRoute(builder:(context)=> RegisterScreen()));
+    // }
+    // else
+    // {
+    //   Navigator.pushReplacement(context, MaterialPageRoute(builder:(context)=> SignInScreen()));
 
-    if(isLogin==true)
-    {
-      Navigator.pushReplacement(context, MaterialPageRoute(builder:(context)=> HomeScreen()));
-    }
-    else
-    {
-      Navigator.pushReplacement(context, MaterialPageRoute(builder:(context)=> SignInScreen()));
 
-
-    }
+    // }
 
 
   }
