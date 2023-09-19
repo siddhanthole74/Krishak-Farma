@@ -24,10 +24,11 @@ class _SplashScreenState extends State<SplashScreen> {
     auth.authStateChanges().listen((User? user) {
       if(user!=null && mounted){
         setState(() {
-          
+
           isLogin=true;
         });
       }
+      
     });
   }
 
