@@ -149,6 +149,18 @@ class _OtpScreenState extends State<OtpScreen> {
           (value) async {
             if (value == true) {
               // user exists in our app
+              ap.getDataFromFirestore().then(
+                    (value) => ap.saveUserDataToSP().then(
+                          (value) => ap.setSignIn().then(
+                                (value) => Navigator.pushAndRemoveUntil(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>HomeScreen(),
+                                    ),
+                                    (route) => false),
+                              ),
+                        ),
+                  );
               
 
             } else {
@@ -156,7 +168,7 @@ class _OtpScreenState extends State<OtpScreen> {
               Navigator.pushAndRemoveUntil(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => HomeScreen()),
+                      builder: (context) => UserInfromationScreen()),
                   (route) => false);
             }
           },

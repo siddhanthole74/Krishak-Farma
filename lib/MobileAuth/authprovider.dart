@@ -86,7 +86,7 @@ class AuthProvider extends ChangeNotifier {
 
       if (user != null) {
         // carry our logic
-        _uid = user.uid;
+        _uid = user.phoneNumber;
         onSuccess();
       }
       _isLoading = false;
@@ -114,19 +114,12 @@ class AuthProvider extends ChangeNotifier {
   void saveUserDataToFirebase({
     required BuildContext context,
     required UserModel userModel,
-    required File profilePic,
     required Function onSuccess,
   }) async {
     _isLoading = true;
     notifyListeners();
     try {
       // uploading image to firebase storage.
-      await storeFileToStorage("profilePic/$_uid", profilePic).then((value) {
-        userModel.profilePic = value;
-        userModel.createdAt = DateTime.now().millisecondsSinceEpoch.toString();
-        userModel.phoneNumber = _firebaseAuth.currentUser!.phoneNumber!;
-        userModel.uid = _firebaseAuth.currentUser!.phoneNumber!;
-      });
       _userModel = userModel;
 
       // uploading to database
@@ -146,12 +139,6 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
-  Future<String> storeFileToStorage(String ref, File file) async {
-    UploadTask uploadTask = _firebaseStorage.ref().child(ref).putFile(file);
-    TaskSnapshot snapshot = await uploadTask;
-    String downloadUrl = await snapshot.ref.getDownloadURL();
-    return downloadUrl;
-  }
 
   Future getDataFromFirestore() async {
     await _firebaseFirestore
@@ -163,9 +150,8 @@ class AuthProvider extends ChangeNotifier {
         name: snapshot['name'],
         email: snapshot['email'],
         createdAt: snapshot['createdAt'],
-        bio: snapshot['bio'],
+
         uid: snapshot['uid'],
-        profilePic: snapshot['profilePic'],
         phoneNumber: snapshot['phoneNumber'],
       );
       _uid = userModel.uid;

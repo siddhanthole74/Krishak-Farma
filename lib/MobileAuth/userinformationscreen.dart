@@ -1,11 +1,11 @@
 import 'dart:io';
-
-
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:krishak_farma/MobileAuth/authprovider.dart';
 import 'package:krishak_farma/MobileAuth/custom_button_in_mobile_auth.dart';
 import 'package:krishak_farma/MobileAuth/snackbar.dart';
 import 'package:krishak_farma/MobileAuth/usermodel.dart';
+import 'package:krishak_farma/screens/home/components/flash_deal.dart';
 import 'package:krishak_farma/screens/home/home_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -17,7 +17,7 @@ class UserInfromationScreen extends StatefulWidget {
 }
 
 class _UserInfromationScreenState extends State<UserInfromationScreen> {
-  File? image;
+  
   final nameController = TextEditingController();
   final emailController = TextEditingController();
   final bioController = TextEditingController();
@@ -30,11 +30,6 @@ class _UserInfromationScreenState extends State<UserInfromationScreen> {
     bioController.dispose();
   }
 
-  // for selecting image
-  void selectImage() async {
-    image = await pickImage(context);
-    setState(() {});
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,23 +49,6 @@ class _UserInfromationScreenState extends State<UserInfromationScreen> {
                 child: Center(
                   child: Column(
                     children: [
-                      InkWell(
-                        onTap: () => selectImage(),
-                        child: image == null
-                            ? const CircleAvatar(
-                                backgroundColor: Colors.deepOrangeAccent,
-                                radius: 50,
-                                child: Icon(
-                                  Icons.account_circle,
-                                  size: 50,
-                                  color: Colors.white,
-                                ),
-                              )
-                            : CircleAvatar(
-                                backgroundImage: FileImage(image!),
-                                radius: 50,
-                              ),
-                      ),
                       Container(
                         width: MediaQuery.of(context).size.width,
                         padding: const EdgeInsets.symmetric(
@@ -80,7 +58,7 @@ class _UserInfromationScreenState extends State<UserInfromationScreen> {
                           children: [
                             // name field
                             textFeld(
-                              hintText: "John Smith",
+                              hintText: "Siddhant Hole",
                               icon: Icons.account_circle,
                               inputType: TextInputType.name,
                               maxLines: 1,
@@ -96,14 +74,6 @@ class _UserInfromationScreenState extends State<UserInfromationScreen> {
                               controller: emailController,
                             ),
 
-                            // bio
-                            textFeld(
-                              hintText: "Enter your bio here...",
-                              icon: Icons.edit,
-                              inputType: TextInputType.name,
-                              maxLines: 2,
-                              controller: bioController,
-                            ),
                           ],
                         ),
                       ),
@@ -174,37 +144,40 @@ class _UserInfromationScreenState extends State<UserInfromationScreen> {
   }
 
   // store user data to database
-  void storeData() async {
-    final ap = Provider.of<AuthProvider>(context, listen: false);
+void storeData() async {
+  final ap = Provider.of<AuthProvider>(context, listen: false);
+
+  // Check if the name field is not empty
+  if (nameController.text.trim().isNotEmpty) {
+    final now = DateTime.now();
+    final formattedDate = DateFormat("dd-MM-yyyy").format(now);
     UserModel userModel = UserModel(
       name: nameController.text.trim(),
       email: emailController.text.trim(),
-      bio: bioController.text.trim(),
-      profilePic: "",
-      createdAt: "",
-      phoneNumber: "",
-      uid: "",
+      createdAt: formattedDate,
+      phoneNumber: ap.uid,
+      uid: ap.uid,
     );
-    if (image != null) {
-      ap.saveUserDataToFirebase(
-        context: context,
-        userModel: userModel,
-        profilePic: image!,
-        onSuccess: () {
-          ap.saveUserDataToSP().then(
-                (value) => ap.setSignIn().then(
-                      (value) => Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => HomeScreen(),
-                          ),
-                          (route) => false),
-                    ),
-              );
-        },
-      );
-    } else {
-      showSnackBar(context, "Please upload your profile photo");
-    }
+
+    ap.saveUserDataToFirebase(
+      context: context,
+      userModel: userModel,
+      onSuccess: () {
+        ap.saveUserDataToSP().then(
+          (value) => ap.setSignIn().then(
+            (value) => Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(
+                builder: (context) => HomeScreen(),
+              ),
+              (route) => false,
+            ),
+          ),
+        );
+      },
+    );
+  } else {
+    showSnackBar(context, "Please Enter Your name");
   }
+}
 }

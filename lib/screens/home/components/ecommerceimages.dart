@@ -1,57 +1,7 @@
 
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
 import '../../../size_config.dart';
-import 'section_title.dart';
 import 'package:krishak_farma/screens/home/components/firestorageservices.dart';
-
-openURL1() async {
-  if (await canLaunch(
-      "https://www.amazon.in/alm/storefront?almBrandId=ctnow")) {
-    await launch("https://www.amazon.in/alm/storefront?almBrandId=ctnow");
-  }
-  else {
-    throw 'could not lunch url';
-  }
-}
-
-openURL2() async {
-  if (await canLaunch("https://www.swiggy.com/swiggy-instamart")) {
-    await launch("https://www.swiggy.com/swiggy-instamart");
-  }
-  else {
-    throw 'could not lunch url';
-  }
-}
-
-openURL3() async {
-  if (await canLaunch("https://www.bigbasket.com")) {
-    await launch("https://www.bigbasket.com");
-  }
-  else {
-    throw 'could not lunch url';
-  }
-}
-
-openURL4() async {
-  if (await canLaunch("https://blinkit.com/")) {
-    await launch("https://blinkit.com/");
-  }
-  else {
-    throw 'could not lunch url';
-  }
-}
-
-openURL5() async {
-  if (await canLaunch(
-      "https://www.flipkart.com/grocery/pr?sid=73z&marketplace=GROCERY")) {
-    await launch(
-        "https://www.flipkart.com/grocery/pr?sid=73z&marketplace=GROCERY");
-  }
-  else {
-    throw 'could not lunch url';
-  }
-}
 
 class EcommerceImage extends StatefulWidget {
   const EcommerceImage({
@@ -377,17 +327,7 @@ class _EcommerceImageState extends State<EcommerceImage> {
 class SpecialOfferCard extends StatelessWidget {
   const SpecialOfferCard({
     Key? key,
-    // required this.category,
-    //required this.image,
-    //required this.numOfBrands,
-    //required this.press, //required Color color,
   }) : super(key: key);
-
-
-  //final String image;
-
-  //final int numOfBrands;
-  //final GestureTapCallback press;
 
   @override
   Widget build(BuildContext context) {
@@ -402,12 +342,6 @@ class SpecialOfferCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(20),
             child: Stack(
               children: [
-                // Image.asset(
-                //   //image,
-                //   width: double.infinity,
-                //   fit: BoxFit.fitWidth,
-                //   //fit: BoxFit.cover,
-                // ),
                 Container(
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
@@ -425,21 +359,7 @@ class SpecialOfferCard extends StatelessWidget {
                     horizontal: getProportionateScreenWidth(15.0),
                     vertical: getProportionateScreenWidth(10),
                   ),
-                  // child: Text.rich(
-                  //   TextSpan(
-                  //     style: TextStyle(color: Colors.white),
-                  //     children: [
-                  //       TextSpan(
-                  //         text: "$category\n",
-                  //         style: TextStyle(
-                  //           fontSize: getProportionateScreenWidth(18),
-                  //           fontWeight: FontWeight.bold,
-                  //         ),
-                  //       ),
-                  //       TextSpan(text: "$numOfBrands Brands")
-                  //     ],
-                  //   ),
-                  // ),
+
                 ),
               ],
             ),

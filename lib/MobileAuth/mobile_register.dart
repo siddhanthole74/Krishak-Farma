@@ -3,11 +3,7 @@ import 'package:country_picker/country_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:krishak_farma/MobileAuth/authprovider.dart';
 import 'package:krishak_farma/MobileAuth/custom_button_in_mobile_auth.dart';
-import 'package:krishak_farma/MobileAuth/otp_screen.dart';
-
 import 'package:provider/provider.dart';
-
-
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
 

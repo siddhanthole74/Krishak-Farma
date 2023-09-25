@@ -1,4 +1,4 @@
-package com.example.native_animated_splash
+package com.example.krishak_farma
 
 import android.content.Context
 import android.os.Bundle
