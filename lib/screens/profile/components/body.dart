@@ -2,16 +2,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:krishak_farma/MobileAuth/mobile_login.dart';
+import 'package:krishak_farma/MobileAuth/authprovider.dart';
+import 'package:krishak_farma/MobileAuth/mobile_register.dart';
+import 'package:krishak_farma/MobileAuth/usermodel.dart';
 import 'package:krishak_farma/screens/profile/components/privacy_policy.dart';
-
-
-import '../../../models/user_model.dart';
-import '../../home/components/myaccount.dart';
+import 'package:provider/provider.dart';
 import '../../home/components/notifications.dart';
-import '../../sign_in/sign_in_screen.dart';
 import 'profile_menu.dart';
 import 'profile_pic.dart';
+
 class Body extends StatefulWidget {
   const Body({Key? key}) : super(key: key);
 
@@ -20,21 +19,27 @@ class Body extends StatefulWidget {
 }
 
 class _BodyState extends State<Body> {
-  User? user=FirebaseAuth.instance.currentUser;
-  UserModel loggedInUser=UserModel();
-  final storage=new FlutterSecureStorage();
-  @override
-  void initState()
-  {
-    super.initState();
-    FirebaseFirestore.instance.collection("users").doc(user!.uid).get().then((value){
-      loggedInUser=UserModel.fromMap(value.data());
-      setState(() {
+  UserModel? u;
+  bool isUserLoaded = false;
+  void getData() async {
+    final ap = Provider.of<AuthProvider>(context, listen: false);
 
-      });
-
+    await ap.getDataFromSP();
+    setState(() {
+      u = ap.userModel;
+      isUserLoaded = true;
+      print(u!.email);
+      print(u!.name);
     });
   }
+
+  @override
+  void initState() {
+    super.initState();
+    getData();
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -45,20 +50,21 @@ class _BodyState extends State<Body> {
           SizedBox(height: 20),
           //facing problem to fecth the first name
           ProfileMenu(
-            text:  " ${loggedInUser.firstName} ${loggedInUser.secondName}",
+            text: u!.name,
             icon: "assets/icons/User Icon.svg",
-            press: () => {
-            },
+            press: () => {},
           ),
           ProfileMenu(
-            text: "${loggedInUser.email}",
+            text: u!.email,
             icon: "assets/icons/Mail.svg",
             press: () {},
           ),
           ProfileMenu(
             text: "Notifications",
             icon: "assets/icons/Bell.svg",
-            press: () =>  Navigator.of(context).push(MaterialPageRoute(builder:(context)=> Notifications()),),
+            press: () => Navigator.of(context).push(
+              MaterialPageRoute(builder: (context) => Notifications()),
+            ),
           ),
           // ProfileMenu(
           //   text: "Settings",
@@ -74,15 +80,15 @@ class _BodyState extends State<Body> {
             },
           ),
           ProfileMenu(
-            text: "Log Out",
-            icon: "assets/icons/Log out.svg",
-            press: () async=>{
-              await FirebaseAuth.instance.signOut(),
-              await storage.delete(key: "uid"),
-              // Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>MobileLogin()), (route) => false)
-              Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>SignInScreen()), (route) => false)
-            }
-          ),
+              text: "Log Out",
+              icon: "assets/icons/Log out.svg",
+              press: () async => {
+                    await FirebaseAuth.instance.signOut(),
+                    //await storage.delete(key: "uid"),
+                    // Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>MobileLogin()), (route) => false)
+                    Navigator.pushAndRemoveUntil(
+                        context, MaterialPageRoute(builder: (context) => RegisterScreen()), (route) => false)
+                  }),
           GestureDetector(
             child: ProfileMenu(
               text: "Privacy Policy",
@@ -106,10 +112,3 @@ class _BodyState extends State<Body> {
   //   Navigator.pushNamed(context, SignInScreen.routeName);
   // }
 }
-
-
-
-
-
-
-

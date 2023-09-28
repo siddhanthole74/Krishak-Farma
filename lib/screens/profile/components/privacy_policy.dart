@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:krishak_farma/MobileAuth/mobile_login.dart';
+
 import 'privacy_policy.dart';
 
 import '../../../models/user_model.dart';

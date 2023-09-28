@@ -38,23 +38,11 @@ dependencies:
   geocoding: ^2.0.4
   uuid: ^3.0.6
   firebase_database:
-
-
-
-
-  # add this line to your dependencies
   overlay_support: ^2.1.0
-
-
   url_launcher:
   javascript: ^0.0.2
   snippet_coder_utils: ^1.0.8
   animated_splash_screen:
-
-
-
-  # The following adds the Cupertino Icons font to your application.
-  # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
   flutter_svg: ^1.1.6  # help us to use SVG in our app
   provider: ^6.0.0 # for State management
@@ -74,20 +62,16 @@ dependencies:
   marquee: ^2.2.3
   firebase_storage:
   flutter_secure_storage:
-  pinput: ^2.2.12
+  pinput: ^2.2.31
   flutter_share: ^2.0.0
   google_maps_flutter: ^2.2.5
   flutter_google_places: ^0.3.0
   http: ^0.13.5
   image_picker: ^0.8.7
   dotted_border: ^2.0.0+3
-
-
-
-
-
-
-
+  shared_preferences: ^2.2.1
+  country_picker: ^2.0.18
+  flutter_bloc: ^8.1.3
 
 dev_dependencies:
   flutter_test:
