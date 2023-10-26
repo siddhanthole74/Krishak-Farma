@@ -132,6 +132,7 @@ class _SplashScreenState extends State<SplashScreen> {
 }
 
 
+
 class WidgetRingAnimator extends StatefulWidget {
   const WidgetRingAnimator({
     required this.child,
