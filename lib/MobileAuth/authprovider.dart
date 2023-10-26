@@ -10,7 +10,6 @@ import 'package:krishak_farma/MobileAuth/snackbar.dart';
 import 'package:krishak_farma/MobileAuth/usermodel.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-
 class AuthProvider extends ChangeNotifier {
   bool _isSignedIn = false;
   bool get isSignedIn => _isSignedIn;
@@ -47,8 +46,7 @@ class AuthProvider extends ChangeNotifier {
     try {
       await _firebaseAuth.verifyPhoneNumber(
           phoneNumber: phoneNumber,
-          verificationCompleted:
-              (PhoneAuthCredential phoneAuthCredential) async {
+          verificationCompleted: (PhoneAuthCredential phoneAuthCredential) async {
             await _firebaseAuth.signInWithCredential(phoneAuthCredential);
           },
           verificationFailed: (error) {
@@ -79,8 +77,7 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      PhoneAuthCredential creds = PhoneAuthProvider.credential(
-          verificationId: verificationId, smsCode: userOtp);
+      PhoneAuthCredential creds = PhoneAuthProvider.credential(verificationId: verificationId, smsCode: userOtp);
 
       User? user = (await _firebaseAuth.signInWithCredential(creds)).user;
 
@@ -100,8 +97,7 @@ class AuthProvider extends ChangeNotifier {
 
   // DATABASE OPERTAIONS
   Future<bool> checkExistingUser() async {
-    DocumentSnapshot snapshot =
-        await _firebaseFirestore.collection("users").doc(_uid).get();
+    DocumentSnapshot snapshot = await _firebaseFirestore.collection("users").doc(_uid).get();
     if (snapshot.exists) {
       print("USER EXISTS");
       return true;
@@ -123,11 +119,7 @@ class AuthProvider extends ChangeNotifier {
       _userModel = userModel;
 
       // uploading to database
-      await _firebaseFirestore
-          .collection("users")
-          .doc(_uid)
-          .set(userModel.toMap())
-          .then((value) {
+      await _firebaseFirestore.collection("users").doc(_uid).set(userModel.toMap()).then((value) {
         onSuccess();
         _isLoading = false;
         notifyListeners();
@@ -139,18 +131,20 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
-
   Future getDataFromFirestore() async {
+    print("-------------------------------------------");
+    print(_firebaseAuth.currentUser!.uid);
+    print(_firebaseAuth.currentUser!.phoneNumber);
+
     await _firebaseFirestore
         .collection("users")
-        .doc(_firebaseAuth.currentUser!.uid)
+        .doc(_firebaseAuth.currentUser!.phoneNumber)
         .get()
         .then((DocumentSnapshot snapshot) {
       _userModel = UserModel(
-        name: snapshot['name'],
+        name: snapshot.get('name'),
         email: snapshot['email'],
         createdAt: snapshot['createdAt'],
-
         uid: snapshot['uid'],
         phoneNumber: snapshot['phoneNumber'],
       );
@@ -169,6 +163,8 @@ class AuthProvider extends ChangeNotifier {
     String data = s.getString("user_model") ?? '';
     _userModel = UserModel.fromMap(jsonDecode(data));
     _uid = _userModel!.uid;
+    print("0----------------------------");
+    print(_uid);
     notifyListeners();
   }
 

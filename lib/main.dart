@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    SizeConfig().init(context);
+    // SizeConfig().init(context);
 
 
     return MultiProvider(
