@@ -9,10 +9,13 @@ import 'package:flutter_svg/svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:krishak_farma/MobileAuth/authprovider.dart';
+import 'package:krishak_farma/MobileAuth/usermodel.dart';
 import 'package:krishak_farma/screens/home/components/addressselection/Loacationautofill.dart';
 import 'package:krishak_farma/screens/home/components/addressselection/network_utility.dart';
 import 'package:krishak_farma/screens/home/home_screen.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 import '../../../components/custom_surfix_icon.dart';
 import '../../../models/add_date.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -163,6 +166,7 @@ class _AddProductState extends State<AddProduct> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    getData();
     ex.addListener(() {
       setState(() {});
     });
@@ -240,11 +244,10 @@ class _AddProductState extends State<AddProduct> {
         borderRadius: BorderRadius.circular(20),
         color: Colors.white,
       ),
-      height: 1500,
+      // height: 1500,
       width: 340,
       child: Column(
         children: [
-
           SizedBox(height: 30),
           Location(),
           SizedBox(height: 30),
@@ -264,60 +267,65 @@ class _AddProductState extends State<AddProduct> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 imagePick(0),
-                SizedBox(width: 10),
+                const SizedBox(width: 10),
                 imagePick(1),
-                SizedBox(width: 10),
+                const SizedBox(width: 10),
                 imagePick(2),
               ],
             ),
           ),
-          SizedBox(height: 30),
+          const SizedBox(height: 30),
           start_date(),
-          SizedBox(height: 30),
+          const SizedBox(height: 30),
           startBidingTime(),
-          SizedBox(height: 30),
+          const SizedBox(height: 30),
           end_date(),
-          SizedBox(height: 30),
+          const SizedBox(height: 30),
           endBidingTime(),
-
-
-          // SizedBox(height: 30),
-          // Image1(),
-          // SizedBox(height: 30),
-          // Image2(),
-          // SizedBox(height: 30),
-          // Image3(),
-          // SizedBox(height: 30),
-          // Image4(), // Take mobile No input
-          SizedBox(height: 30),
+          const SizedBox(height: 30),
           save(),
-          SizedBox(height: 25),
+          const SizedBox(height: 25),
         ],
       ),
     );
   }
 
+  bool isUserLoaded = false;
+  UserModel? u;
+  void getData() async {
+    final ap = Provider.of<AuthProvider>(context, listen: false);
+
+    await ap.getDataFromSP();
+    setState(() {
+      u = ap.userModel;
+      isUserLoaded = true;
+      print(u!.email);
+      print(u!.name);
+    });
+  }
+
   GestureDetector save() {
     final FirebaseAuth auth = FirebaseAuth.instance;
+
     final User? user = auth.currentUser;
     final userId = user!.uid;
+
     return GestureDetector(
       onTap: () {
         final products = Products(
-          name: controllerName.text,
-          product: selctedItem!,
-          Quantity: controllerQuantity.text,
-          imageUrls: imageUrls,
-          mobileno: controllerMobileNo.text,
-          startBidingDate: startBidingDate,
-          endBidingDate: endBidingDate,
-          startTime: startTime.format(context),
-          endTime: endTime.format(context),
-          location: widget.txt,
-          dealDate: date,
-            userId: userId,
-            price: []
-        );
+            name: controllerName.text,
+            product: selctedItem!,
+            Quantity: controllerQuantity.text,
+            imageUrls: imageUrls,
+            mobileno: controllerMobileNo.text,
+            startBidingDate: startBidingDate,
+            endBidingDate: endBidingDate,
+            startTime: startTime.format(context),
+            endTime: endTime.format(context),
+            location: widget.txt,
+            dealDate: date,
+            userId: u!.uid,
+            price: []);
         createProduct(products);
 
         //   var add = Add_data(
@@ -385,7 +393,7 @@ class _AddProductState extends State<AddProduct> {
         ),
         width: 120,
         height: 50,
-        child: Text(
+        child: const Text(
           'Pick image 2',
           style: TextStyle(
             fontFamily: 'f',
@@ -541,27 +549,30 @@ class _AddProductState extends State<AddProduct> {
   }
 
   Widget start_date() {
-    return Container(
-      alignment: Alignment.bottomLeft,
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10), border: Border.all(width: 2, color: Color(0xffC5C5C5))),
-      width: 300,
-      child: TextButton(
-        onPressed: () async {
-          DateTime? newDate = await showDatePicker(
-              context: context, initialDate: DateTime.now(), firstDate: DateTime(2020), lastDate: DateTime(2100));
-          if (newDate == Null) return;
-          setState(() {
-            // print("Sahsdkfdkjbf " + myDateFormat.format(newDate!) as DateTime);
-            // print("kjsfkrskfur : " + newDate.toString());
-            startBidingDate = myDateFormat.format(newDate!);
-          });
-        },
-        child: Text(
-          'Start Biding date :  $startBidingDate',
-          style: TextStyle(
-            fontSize: 15,
-            color: Colors.black,
+    return GestureDetector(
+      onTap: () async {
+        DateTime? newDate = await showDatePicker(
+            context: context, initialDate: DateTime.now(), firstDate: DateTime(2020), lastDate: DateTime(2100));
+        if (newDate == Null) return;
+        setState(() {
+          // print("Sahsdkfdkjbf " + myDateFormat.format(newDate!) as DateTime);
+          // print("kjsfkrskfur : " + newDate.toString());
+          startBidingDate = myDateFormat.format(newDate!);
+        });
+      },
+      child: Container(
+        alignment: Alignment.bottomLeft,
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10), border: Border.all(width: 2, color: Color(0xffC5C5C5))),
+        width: 300,
+        child: TextButton(
+          onPressed: () {},
+          child: Text(
+            'Start Biding date :  $startBidingDate',
+            style: TextStyle(
+              fontSize: 15,
+              color: Colors.black,
+            ),
           ),
         ),
       ),
@@ -569,14 +580,9 @@ class _AddProductState extends State<AddProduct> {
   }
 
   Widget end_date() {
-    return Container(
-      alignment: Alignment.bottomLeft,
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10), border: Border.all(width: 2, color: Color(0xffC5C5C5))),
-      width: 300,
-      child: TextButton(
-        onPressed: () async {
-          DateTime? newDate = await showDatePicker(
+    return GestureDetector(
+      onTap: () async {
+        DateTime? newDate = await showDatePicker(
               context: context, initialDate: DateTime.now(), firstDate: DateTime(2020), lastDate: DateTime(2100));
 
           if (newDate == Null) return;
@@ -587,12 +593,20 @@ class _AddProductState extends State<AddProduct> {
             // endBiddindDate = endBidingDate.
           });
           print("akjddsc" + endBidingDate);
-        },
-        child: Text(
-          'End Biding date :  $endBidingDate',
-          style: TextStyle(
-            fontSize: 15,
-            color: Colors.black,
+      },
+      child: Container(
+        alignment: Alignment.bottomLeft,
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10), border: Border.all(width: 2, color: Color(0xffC5C5C5))),
+        width: 300,
+        child: TextButton(
+          onPressed: () {},
+          child: Text(
+            'End Biding date :  $endBidingDate',
+            style: TextStyle(
+              fontSize: 15,
+              color: Colors.black,
+            ),
           ),
         ),
       ),
@@ -606,28 +620,31 @@ class _AddProductState extends State<AddProduct> {
   }
 
   Widget startBidingTime() {
-    return Container(
-      alignment: Alignment.bottomLeft,
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10), border: Border.all(width: 2, color: Color(0xffC5C5C5))),
-      width: 300,
-      child: TextButton(
-        onPressed: () async {
-          TimeOfDay? newTime = await showTimePicker(
-            context: context,
-            initialTime: stringToTimeOfDay(startTime.format(context)),
-          );
-          if (newTime != null) {
-            setState(() {
-              startTime = stringToTimeOfDay(newTime.format(context));
-            });
-          }
-        },
-        child: Text(
-          'Starting Biding Time :  ${startTime.format(context)}',
-          style: TextStyle(
-            fontSize: 15,
-            color: Colors.black,
+    return GestureDetector(
+      onTap: () async {
+        TimeOfDay? newTime = await showTimePicker(
+          context: context,
+          initialTime: stringToTimeOfDay(startTime.format(context)),
+        );
+        if (newTime != null) {
+          setState(() {
+            startTime = stringToTimeOfDay(newTime.format(context));
+          });
+        }
+      },
+      child: Container(
+        alignment: Alignment.bottomLeft,
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10), border: Border.all(width: 2, color: Color(0xffC5C5C5))),
+        width: 300,
+        child: TextButton(
+          onPressed: () {},
+          child: Text(
+            'Starting Biding Time :  ${startTime.format(context)}',
+            style: TextStyle(
+              fontSize: 15,
+              color: Colors.black,
+            ),
           ),
         ),
       ),
@@ -635,14 +652,9 @@ class _AddProductState extends State<AddProduct> {
   }
 
   Widget endBidingTime() {
-    return Container(
-      alignment: Alignment.bottomLeft,
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10), border: Border.all(width: 2, color: Color(0xffC5C5C5))),
-      width: 300,
-      child: TextButton(
-        onPressed: () async {
-          TimeOfDay? newtime = await showTimePicker(
+    return GestureDetector(
+      onTap: () async {
+        TimeOfDay? newtime = await showTimePicker(
             context: context,
             initialTime: stringToTimeOfDay(endTime.format(context)),
           );
@@ -650,12 +662,20 @@ class _AddProductState extends State<AddProduct> {
             endTime = stringToTimeOfDay(newtime.format(context));
             ;
           }
-        },
-        child: Text(
-          'Ending Biding Time :  ${endTime.format(context)}',
-          style: TextStyle(
-            fontSize: 15,
-            color: Colors.black,
+      },
+      child: Container(
+        alignment: Alignment.bottomLeft,
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10), border: Border.all(width: 2, color: Color(0xffC5C5C5))),
+        width: 300,
+        child: TextButton(
+          onPressed: () {},
+          child: Text(
+            'Ending Biding Time :  ${endTime.format(context)}',
+            style: TextStyle(
+              fontSize: 15,
+              color: Colors.black,
+            ),
           ),
         ),
       ),
@@ -788,10 +808,7 @@ class _AddProductState extends State<AddProduct> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: TextField(
-
-          //focusNode: ex,
           //autofocus: false,
-          //initialValue: 'your initial text',
           controller: controllerLocation, // here for storing the name of farmer modify code later
           showCursor: true,
           keyboardType: TextInputType.streetAddress,
@@ -800,10 +817,10 @@ class _AddProductState extends State<AddProduct> {
             // labelText: "${widget.txt}",
             hintStyle: TextStyle(color: Colors.grey),
             hintText: "select location press icon ",
-            labelText: "${widget.txt}",
+            labelText: "select location",
             // hintText: "${widget.txt}",
             // labelText: "select location press icon at right side",
-            labelStyle: TextStyle(fontSize: 15, color: Colors.black),
+            labelStyle: const TextStyle(fontSize: 15, color: Colors.grey),
             enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10), borderSide: BorderSide(width: 2, color: Color(0xffC5C5C5))),
             focusedBorder: OutlineInputBorder(
@@ -974,7 +991,7 @@ class _AddProductState extends State<AddProduct> {
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 15),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     GestureDetector(
@@ -983,14 +1000,17 @@ class _AddProductState extends State<AddProduct> {
                       },
                       child: Icon(Icons.arrow_back, color: Colors.white),
                     ),
-                    Text(
+                    SizedBox(
+                      width: 90,
+                    ),
+                    const Text(
                       'Add Product',
                       style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: Colors.white),
                     ),
-                    Icon(
-                      Icons.attach_file_outlined,
-                      color: Colors.white,
-                    )
+                    // Icon(
+                    //   Icons.attach_file_outlined,
+                    //   color: Colors.white,
+                    // )
                   ],
                 ),
               )
