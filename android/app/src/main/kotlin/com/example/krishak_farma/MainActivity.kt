@@ -1,8 +1,7 @@
 package com.example.krishak_farma
-import io.flutter.embedding.android.SplashScreen
-import com.example.krishak_farma.SplashView // Make sure the package path is correct
+import android.os.Build
+import androidx.core.view.WindowCompat
 import io.flutter.embedding.android.FlutterActivity
-
-class MainActivity: FlutterActivity() {
-    override fun provideSplashScreen(): SplashScreen? = SplashView()
+class MainActivity : FlutterActivity() {
+  
 }

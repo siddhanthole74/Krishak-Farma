@@ -14,11 +14,35 @@
       },
       "oauth_client": [
         {
-          "client_id": "472583137649-3bh92q0fg5l1n75842mfei2l5ifg9t4c.apps.googleusercontent.com",
+          "client_id": "472583137649-cet2af0mbjqv0mlbri5lhb13gm93i0pc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.krishak_farma",
+            "certificate_hash": "e601ea2438f9e5a18bf86f267a427f5a97e25336"
+          }
+        },
+        {
+          "client_id": "472583137649-dv2d1uq67jotk9lqk6b4p4ul71v9b0fi.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.example.krishak_farma",
             "certificate_hash": "d6101f3eab17e2612f8d4eab7dd043a2038aeb58"
+          }
+        },
+        {
+          "client_id": "472583137649-p2cajlph555njmen99ahh2bh7djsus6c.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.krishak_farma",
+            "certificate_hash": "e1e1f88155bc39d6cb44d37cf9c093ab099fe9a1"
+          }
+        },
+        {
+          "client_id": "472583137649-uqp7fetit257dltt36c0v0hvej0m9gss.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.krishak_farma",
+            "certificate_hash": "fcb92dbc093de59af36348016a4f9ce48e39786e"
           }
         },
         {
@@ -37,6 +61,13 @@
             {
               "client_id": "472583137649-0a6m56ek0od43m74ledg9j1648mvsrho.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "472583137649-8bb6b2b4s94hmi1kisf33rdkmvj21ru1.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.krishakFarma"
+              }
             }
           ]
         }
