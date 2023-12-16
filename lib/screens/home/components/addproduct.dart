@@ -343,7 +343,7 @@ class _AddProductState extends State<AddProduct> {
         ),
         width: 120,
         height: 50,
-        child: Text(
+        child: const Text(
           'Save',
           style: TextStyle(
             fontFamily: 'f',

@@ -1,12 +1,7 @@
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:krishak_farma/screens/sign_in/components/sign_form.dart';
 import 'package:krishak_farma/components/no_account_text.dart';
-import 'package:krishak_farma/components/social_card.dart';
 import 'package:krishak_farma/size_config.dart';
-
-
 
 class Body extends StatelessWidget {
   @override
@@ -29,7 +24,7 @@ class Body extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                Text(
+                const Text(
                   "Sign in with your email and password  \nor continue with social media",
                   textAlign: TextAlign.center,
                 ),
@@ -57,7 +52,7 @@ class Body extends StatelessWidget {
                 //   ],
                 // ),
                 //SizedBox(height: getProportionateScreenHeight(20)),
-                NoAccountText(),
+                const NoAccountText(),
               ],
             ),
           ),

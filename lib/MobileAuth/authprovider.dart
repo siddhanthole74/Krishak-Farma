@@ -78,9 +78,7 @@ class AuthProvider extends ChangeNotifier {
 
     try {
       PhoneAuthCredential creds = PhoneAuthProvider.credential(verificationId: verificationId, smsCode: userOtp);
-
       User? user = (await _firebaseAuth.signInWithCredential(creds)).user;
-
       if (user != null) {
         // carry our logic
         _uid = user.phoneNumber;
