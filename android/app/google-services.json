@@ -30,6 +30,14 @@
           }
         },
         {
+          "client_id": "472583137649-lkv2eo443boipbi4oe6amv2829lp2cjh.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.krishak_farma",
+            "certificate_hash": "2fe02871a7f12706ed26807d5c3b3e9fd85ad650"
+          }
+        },
+        {
           "client_id": "472583137649-p2cajlph555njmen99ahh2bh7djsus6c.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

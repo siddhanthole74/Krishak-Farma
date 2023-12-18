@@ -45,22 +45,28 @@ class AuthProvider extends ChangeNotifier {
   void signInWithPhone(BuildContext context, String phoneNumber) async {
     try {
       await _firebaseAuth.verifyPhoneNumber(
-          phoneNumber: phoneNumber,
-          verificationCompleted: (PhoneAuthCredential phoneAuthCredential) async {
-            await _firebaseAuth.signInWithCredential(phoneAuthCredential);
-          },
-          verificationFailed: (error) {
-            throw Exception(error.message);
-          },
-          codeSent: (verificationId, forceResendingToken) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => OtpScreen(verificationId: verificationId),
+        phoneNumber: phoneNumber,
+        verificationCompleted: (PhoneAuthCredential phoneAuthCredential) async {
+          await _firebaseAuth.signInWithCredential(phoneAuthCredential);
+        },
+        verificationFailed: (error) {
+          throw Exception(error.message);
+        },
+        codeSent: (verificationId, forceResendingToken) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => OtpScreen(
+                verificationId: verificationId,
+                PhoneNumber: phoneNumber,
               ),
-            );
-          },
-          codeAutoRetrievalTimeout: (verificationId) {});
+            ),
+          );
+        },
+        codeAutoRetrievalTimeout: (verificationId) {},
+        forceResendingToken:
+            null, // Set forceResendingToken to null to disable opening browser
+      );
     } on FirebaseAuthException catch (e) {
       showSnackBar(context, e.message.toString());
     }
@@ -77,7 +83,8 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      PhoneAuthCredential creds = PhoneAuthProvider.credential(verificationId: verificationId, smsCode: userOtp);
+      PhoneAuthCredential creds = PhoneAuthProvider.credential(
+          verificationId: verificationId, smsCode: userOtp);
 
       User? user = (await _firebaseAuth.signInWithCredential(creds)).user;
 
@@ -97,7 +104,8 @@ class AuthProvider extends ChangeNotifier {
 
   // DATABASE OPERTAIONS
   Future<bool> checkExistingUser() async {
-    DocumentSnapshot snapshot = await _firebaseFirestore.collection("users").doc(_uid).get();
+    DocumentSnapshot snapshot =
+        await _firebaseFirestore.collection("users").doc(_uid).get();
     if (snapshot.exists) {
       print("USER EXISTS");
       return true;
@@ -119,7 +127,11 @@ class AuthProvider extends ChangeNotifier {
       _userModel = userModel;
 
       // uploading to database
-      await _firebaseFirestore.collection("users").doc(_uid).set(userModel.toMap()).then((value) {
+      await _firebaseFirestore
+          .collection("users")
+          .doc(_uid)
+          .set(userModel.toMap())
+          .then((value) {
         onSuccess();
         _isLoading = false;
         notifyListeners();
@@ -174,5 +186,30 @@ class AuthProvider extends ChangeNotifier {
     _isSignedIn = false;
     notifyListeners();
     s.clear();
+  }
+
+  Future resendOtp({
+    required String phoneNumber,
+    required BuildContext context,
+    required Function onSuccess,
+    required Function(dynamic error) onFailed,
+  }) async {
+    try {
+      await _firebaseAuth.verifyPhoneNumber(
+        phoneNumber: phoneNumber,
+        verificationCompleted: (PhoneAuthCredential phoneAuthCredential) async {
+          await _firebaseAuth.signInWithCredential(phoneAuthCredential);
+        },
+        verificationFailed: (error) {
+          throw Exception(error.message);
+        },
+        codeSent: (verificationId, forceResendingToken) {
+          onSuccess();
+        },
+        codeAutoRetrievalTimeout: (verificationId) {},
+      );
+    } on FirebaseAuthException catch (e) {
+      onFailed(e.message);
+    }
   }
 }
