@@ -21,8 +21,10 @@ class OtpScreen extends StatefulWidget {
 
 class _OtpScreenState extends State<OtpScreen> {
   String? otpCode;
-  bool isResendingOtp = false; // Track whether resend OTP is in progress
-  bool _showResendText = false; // Track the visibility of Resend OTP text
+  bool isResendingOtp = false;
+  bool _showResendText = false;
+  int _resendCountdown = 30;
+  late Timer _resendTimer;
 
   @override
   void initState() {
@@ -31,11 +33,24 @@ class _OtpScreenState extends State<OtpScreen> {
   }
 
   void startResendTimer() {
-    Timer(Duration(seconds: 30), () {
-      setState(() {
-        _showResendText = true;
-      });
+    _resendTimer = Timer.periodic(Duration(seconds: 1), (timer) {
+      if (_resendCountdown > 0) {
+        setState(() {
+          _resendCountdown--;
+        });
+      } else {
+        setState(() {
+          _showResendText = true;
+        });
+        _resendTimer.cancel(); // Cancel the timer once countdown reaches zero
+      }
     });
+  }
+
+  @override
+  void dispose() {
+    _resendTimer.cancel(); // Cancel the timer in the dispose method
+    super.dispose();
   }
 
   @override
@@ -93,7 +108,7 @@ class _OtpScreenState extends State<OtpScreen> {
                       ),
                       const SizedBox(height: 10),
                       const Text(
-                        "Enter the OTP send to your phone number",
+                        "Enter the OTP sent to your phone number",
                         style: TextStyle(
                           fontSize: 14,
                           color: Colors.black38,
@@ -155,7 +170,6 @@ class _OtpScreenState extends State<OtpScreen> {
                             ? (isResendingOtp
                                 ? null
                                 : () {
-                                    // Allow resend only if not already resending
                                     Provider.of<AuthProvider>(context, listen: false).resendOtp(
                                       phoneNumber: widget.PhoneNumber,
                                       context: context,
@@ -169,7 +183,7 @@ class _OtpScreenState extends State<OtpScreen> {
                                   })
                             : null,
                         child: Text(
-                          _showResendText ? "Resend OTP" : "Resend OTP in 30s",
+                          _showResendText ? "Resend OTP" : "Resend OTP in $_resendCountdown s",
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
