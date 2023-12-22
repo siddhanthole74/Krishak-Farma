@@ -50,12 +50,12 @@ class _BodyState extends State<Body> {
           SizedBox(height: 20),
           //facing problem to fecth the first name
           ProfileMenu(
-            text: u!.name,
+            text: u?.name ?? 'Default Name',
             icon: "assets/icons/User Icon.svg",
             press: () => {},
           ),
           ProfileMenu(
-            text: u!.email,
+            text: u?.email ?? 'Default Email',
             icon: "assets/icons/Mail.svg",
             press: () {},
           ),
@@ -87,7 +87,10 @@ class _BodyState extends State<Body> {
                     //await storage.delete(key: "uid"),
                     // Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>MobileLogin()), (route) => false)
                     Navigator.pushAndRemoveUntil(
-                        context, MaterialPageRoute(builder: (context) => RegisterScreen()), (route) => false)
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => RegisterScreen()),
+                        (route) => false)
                   }),
           GestureDetector(
             child: ProfileMenu(

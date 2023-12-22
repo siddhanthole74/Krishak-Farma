@@ -16,41 +16,44 @@ class MyBids extends StatefulWidget {
 class _MyBidsState extends State<MyBids> {
   List<Prod> newList = [];
 
-  void getPraticularUserProductData() async {
+  void getParticularUserProductData() async {
     List<Prod> products = [];
     final FirebaseAuth auth = FirebaseAuth.instance;
     final User? user = auth.currentUser;
     final userId = user!.uid;
-    print("jhdsbchsd");
-    await FirebaseFirestore.instance.collection("products").where('userId', isEqualTo: userId).get().then((value) => {
-          value.docs.forEach((element) {
-            List prices = [];
-            for (var i in element.data()['price']) {
-              prices.add(i['price']);
-            }
 
-            prices.sort();
-            Prod product = Prod(
-              price: element.data()['price'],
-              prodName: element.data()['Product'],
-              maxPrice: prices.length == 0 ? "No One Added Bid" : prices[prices.length - 1],
-            );
-            products.add(product);
-          })
-        });
+    await FirebaseFirestore.instance
+        .collection("products")
+        .where('userId', isEqualTo: userId)
+        .get()
+        .then((value) => {
+              value.docs.forEach((element) {
+                List prices = [];
+                for (var i in element.data()['price']) {
+                  prices.add(i['price']);
+                }
+
+                prices.sort();
+                Prod product = Prod(
+                  price: element.data()['price'],
+                  prodName: element.data()['Product'],
+                  maxPrice: prices.length == 0
+                      ? "No One Added Bid"
+                      : prices[prices.length - 1],
+                );
+                products.add(product);
+              })
+            });
+
     setState(() {
       newList = products;
     });
-
-    print(products[0].prodName);
-    print(products[1].prodName);
   }
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    getPraticularUserProductData();
+    getParticularUserProductData();
   }
 
   @override
@@ -58,20 +61,30 @@ class _MyBidsState extends State<MyBids> {
     final FirebaseAuth auth = FirebaseAuth.instance;
     final User? user = auth.currentUser;
     final userId = user!.uid;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('My Bids'),
         backgroundColor: Colors.deepOrangeAccent,
       ),
       body: StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance.collection('BiddingData').snapshots(),
+        stream:
+            FirebaseFirestore.instance.collection('BiddingData').snapshots(),
         builder: (context, snapshot) {
-          if (newList.length == 0) {
-            return const Center(
-              child: CircularProgressIndicator(),
+          if (newList.isEmpty) {
+            return Center(
+              child: Text(
+                "No Bids Placed",
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 25,
+                ),
+              ),
             );
           }
+
           final bidDocs = snapshot.data!.docs;
+
           return ListView.builder(
             itemCount: newList.length,
             itemBuilder: (context, index) {
@@ -80,7 +93,9 @@ class _MyBidsState extends State<MyBids> {
                 title: Container(
                   height: 65,
                   decoration: BoxDecoration(
-                      color: Color.fromRGBO(255, 114, 58, 1), borderRadius: BorderRadius.all(Radius.circular(7))),
+                    color: Color.fromRGBO(255, 114, 58, 1),
+                    borderRadius: BorderRadius.all(Radius.circular(7)),
+                  ),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: Column(
@@ -102,7 +117,6 @@ class _MyBidsState extends State<MyBids> {
                     ),
                   ),
                 ),
-                //subtitle: Text('Bid Amount: \$${bid['bidAmount']}'),
               );
             },
           );
