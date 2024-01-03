@@ -8,6 +8,7 @@ import 'package:krishak_farma/screens/splash/splash_screen.dart';
 import 'package:krishak_farma/size_config.dart';
 import 'package:provider/provider.dart';
 import 'models/add_date.dart';
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
@@ -23,10 +24,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     // SizeConfig().init(context);
-
-
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => AuthProvider()),
