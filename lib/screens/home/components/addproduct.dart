@@ -11,6 +11,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:krishak_farma/screens/home/components/addressselection/Loacationautofill.dart';
 import 'package:krishak_farma/screens/home/components/addressselection/network_utility.dart';
+import 'package:krishak_farma/screens/home/components/addressselection/getCurrentLocation.dart';
 import 'package:krishak_farma/screens/home/home_screen.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../../components/custom_surfix_icon.dart';
@@ -202,7 +203,8 @@ class _AddProductState extends State<AddProduct> {
   // }
 
   Future<void> placeAutocomplete(String query) async {
-    Uri uri = Uri.http("maps.googleapis.com", "maps/api/place/autocomplete/json", {
+    Uri uri =
+        Uri.http("maps.googleapis.com", "maps/api/place/autocomplete/json", {
       "input": query,
       "key": apiKey,
     });
@@ -244,7 +246,6 @@ class _AddProductState extends State<AddProduct> {
       width: 340,
       child: Column(
         children: [
-
           SizedBox(height: 30),
           Location(),
           SizedBox(height: 30),
@@ -280,7 +281,6 @@ class _AddProductState extends State<AddProduct> {
           SizedBox(height: 30),
           endBidingTime(),
 
-
           // SizedBox(height: 30),
           // Image1(),
           // SizedBox(height: 30),
@@ -300,24 +300,24 @@ class _AddProductState extends State<AddProduct> {
   GestureDetector save() {
     final FirebaseAuth auth = FirebaseAuth.instance;
     final User? user = auth.currentUser;
-    final userId = user!.uid;
+    final userId = user != null ? user.uid : 'default user';
+    print("The user is in addProducts is ${userId}");
     return GestureDetector(
       onTap: () {
         final products = Products(
-          name: controllerName.text,
-          product: selctedItem!,
-          Quantity: controllerQuantity.text,
-          imageUrls: imageUrls,
-          mobileno: controllerMobileNo.text,
-          startBidingDate: startBidingDate,
-          endBidingDate: endBidingDate,
-          startTime: startTime.format(context),
-          endTime: endTime.format(context),
-          location: widget.txt,
-          dealDate: date,
+            name: controllerName.text,
+            product: selctedItem!,
+            Quantity: controllerQuantity.text,
+            imageUrls: imageUrls,
+            mobileno: controllerMobileNo.text,
+            startBidingDate: startBidingDate,
+            endBidingDate: endBidingDate,
+            startTime: startTime.format(context),
+            endTime: endTime.format(context),
+            location: widget.txt,
+            dealDate: date,
             userId: userId,
-            price: []
-        );
+            price: []);
         createProduct(products);
 
         //   var add = Add_data(
@@ -484,7 +484,8 @@ class _AddProductState extends State<AddProduct> {
                 // padding: EdgeInsets.only(left: 20),
                 height: 100,
                 width: 100,
-                decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
+                decoration:
+                    BoxDecoration(borderRadius: BorderRadius.circular(10)),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -497,7 +498,8 @@ class _AddProductState extends State<AddProduct> {
                     ),
                     Text(
                       "Select Image",
-                      style: TextStyle(fontSize: 13, color: Colors.grey.shade400),
+                      style:
+                          TextStyle(fontSize: 13, color: Colors.grey.shade400),
                     )
                   ],
                 ),
@@ -518,12 +520,16 @@ class _AddProductState extends State<AddProduct> {
     return Container(
       alignment: Alignment.bottomLeft,
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10), border: Border.all(width: 2, color: Color(0xffC5C5C5))),
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(width: 2, color: Color(0xffC5C5C5))),
       width: 300,
       child: TextButton(
         onPressed: () async {
           DateTime? newDate = await showDatePicker(
-              context: context, initialDate: date, firstDate: DateTime(2020), lastDate: DateTime(2100));
+              context: context,
+              initialDate: date,
+              firstDate: DateTime(2020),
+              lastDate: DateTime(2100));
           if (newDate == Null) return;
           setState(() {
             date = newDate!;
@@ -544,12 +550,16 @@ class _AddProductState extends State<AddProduct> {
     return Container(
       alignment: Alignment.bottomLeft,
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10), border: Border.all(width: 2, color: Color(0xffC5C5C5))),
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(width: 2, color: Color(0xffC5C5C5))),
       width: 300,
       child: TextButton(
         onPressed: () async {
           DateTime? newDate = await showDatePicker(
-              context: context, initialDate: DateTime.now(), firstDate: DateTime(2020), lastDate: DateTime(2100));
+              context: context,
+              initialDate: DateTime.now(),
+              firstDate: DateTime(2020),
+              lastDate: DateTime(2100));
           if (newDate == Null) return;
           setState(() {
             // print("Sahsdkfdkjbf " + myDateFormat.format(newDate!) as DateTime);
@@ -572,12 +582,16 @@ class _AddProductState extends State<AddProduct> {
     return Container(
       alignment: Alignment.bottomLeft,
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10), border: Border.all(width: 2, color: Color(0xffC5C5C5))),
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(width: 2, color: Color(0xffC5C5C5))),
       width: 300,
       child: TextButton(
         onPressed: () async {
           DateTime? newDate = await showDatePicker(
-              context: context, initialDate: DateTime.now(), firstDate: DateTime(2020), lastDate: DateTime(2100));
+              context: context,
+              initialDate: DateTime.now(),
+              firstDate: DateTime(2020),
+              lastDate: DateTime(2100));
 
           if (newDate == Null) return;
           print(newDate.toString());
@@ -609,7 +623,8 @@ class _AddProductState extends State<AddProduct> {
     return Container(
       alignment: Alignment.bottomLeft,
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10), border: Border.all(width: 2, color: Color(0xffC5C5C5))),
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(width: 2, color: Color(0xffC5C5C5))),
       width: 300,
       child: TextButton(
         onPressed: () async {
@@ -638,7 +653,8 @@ class _AddProductState extends State<AddProduct> {
     return Container(
       alignment: Alignment.bottomLeft,
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10), border: Border.all(width: 2, color: Color(0xffC5C5C5))),
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(width: 2, color: Color(0xffC5C5C5))),
       width: 300,
       child: TextButton(
         onPressed: () async {
@@ -730,7 +746,8 @@ class _AddProductState extends State<AddProduct> {
           labelText: 'amount',
           labelStyle: TextStyle(fontSize: 17, color: Colors.grey.shade500),
           enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10), borderSide: BorderSide(width: 2, color: Color(0xffC5C5C5))),
+              borderRadius: BorderRadius.circular(10),
+              borderSide: BorderSide(width: 2, color: Color(0xffC5C5C5))),
           focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
               borderSide: BorderSide(width: 2, color: Colors.deepOrangeAccent)),
@@ -750,7 +767,8 @@ class _AddProductState extends State<AddProduct> {
           labelText: 'explain',
           labelStyle: TextStyle(fontSize: 17, color: Colors.grey.shade500),
           enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10), borderSide: BorderSide(width: 2, color: Color(0xffC5C5C5))),
+              borderRadius: BorderRadius.circular(10),
+              borderSide: BorderSide(width: 2, color: Color(0xffC5C5C5))),
           focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
               borderSide: BorderSide(width: 2, color: Colors.deepOrangeAccent)),
@@ -772,7 +790,8 @@ class _AddProductState extends State<AddProduct> {
           labelText: 'Enter name',
           labelStyle: TextStyle(fontSize: 17, color: Colors.grey.shade500),
           enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10), borderSide: BorderSide(width: 2, color: Color(0xffC5C5C5))),
+              borderRadius: BorderRadius.circular(10),
+              borderSide: BorderSide(width: 2, color: Color(0xffC5C5C5))),
           focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
               borderSide: BorderSide(width: 2, color: Colors.deepOrangeAccent)),
@@ -781,59 +800,161 @@ class _AddProductState extends State<AddProduct> {
       ),
     );
   }
+Padding Location() {
+  String currentLocation = ''; // Variable to store the current location
+
+  // Fetch the user's current location during widget initialization
+  getCurrentLocation().then((location) {
+    if (location.isNotEmpty) {
+      currentLocation = location;
+      // Update the placeholder text of the TextField
+      controllerLocation.text = currentLocation;
+    }
+  });
+
+  return Padding(
+    padding: const EdgeInsets.symmetric(horizontal: 20),
+    child: TextField(
+      controller: controllerLocation,
+      showCursor: true,
+      keyboardType: TextInputType.streetAddress,
+      decoration: InputDecoration(
+        contentPadding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+        hintStyle: TextStyle(color: Colors.grey),
+        hintText: currentLocation.isNotEmpty
+            ? currentLocation
+            : "Select location or tap to autofill",
+        labelText: "${widget.txt}",
+        labelStyle: TextStyle(fontSize: 15, color: Colors.black),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: BorderSide(width: 2, color: Color(0xffC5C5C5)),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: BorderSide(width: 2, color: Colors.deepOrangeAccent),
+        ),
+        suffixIcon: IconButton(
+          icon: SvgPicture.asset("assets/icons/Locationpoint.svg"),
+          onPressed: () {
+            // Navigate to the Locationautofill page when the suffix icon is tapped
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => Locationautofill()),
+            );
+          },
+        ),
+      ),
+      onTap: () {
+        // Navigate to the Locationautofill page when the TextField is tapped
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => Locationautofill()),
+        );
+      },
+    ),
+  );
+}
 
   // for location
+// Padding Location() {
+//   return Padding(
+//     padding: const EdgeInsets.symmetric(horizontal: 20),
+//     child: TextField(
+//       controller: controllerLocation,
+//       showCursor: true,
+//       keyboardType: TextInputType.streetAddress,
+//       decoration: InputDecoration(
+//         contentPadding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+//         hintStyle: TextStyle(color: Colors.grey),
+//         hintText: "Select location or tap to autofill",
+//         labelText: "${widget.txt}",
+//         labelStyle: TextStyle(fontSize: 15, color: Colors.black),
+//         enabledBorder: OutlineInputBorder(
+//           borderRadius: BorderRadius.circular(10),
+//           borderSide: BorderSide(width: 2, color: Color(0xffC5C5C5)),
+//         ),
+//         focusedBorder: OutlineInputBorder(
+//           borderRadius: BorderRadius.circular(10),
+//           borderSide: BorderSide(width: 2, color: Colors.deepOrangeAccent),
+//         ),
+//         suffixIcon: IconButton(
+//           icon: SvgPicture.asset("assets/icons/Locationpoint.svg"),
+//           onPressed: () {
+//             // Handle tap on the suffix icon if needed
+//           },
+//         ),
+//       ),
+//       onTap: () async {
+//         // Fetch the user's current location when the TextField is tapped
+//         String result = await Navigator.push(
+//           context,
+//           MaterialPageRoute(builder: (context) => Locationautofill()),
+//         );
 
-  Padding Location() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: TextField(
+//         // Update the TextField with the obtained location
+//         if (result != null && result.isNotEmpty) {
+//           controllerLocation.text = result;
+//         }
+//       },
+//     ),
+//   );
+// }
 
-          //focusNode: ex,
-          //autofocus: false,
-          //initialValue: 'your initial text',
-          controller: controllerLocation, // here for storing the name of farmer modify code later
-          showCursor: true,
-          keyboardType: TextInputType.streetAddress,
-          decoration: InputDecoration(
-            contentPadding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-            // labelText: "${widget.txt}",
-            hintStyle: TextStyle(color: Colors.grey),
-            hintText: "select location press icon ",
-            labelText: "${widget.txt}",
-            // hintText: "${widget.txt}",
-            // labelText: "select location press icon at right side",
-            labelStyle: TextStyle(fontSize: 15, color: Colors.black),
-            enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10), borderSide: BorderSide(width: 2, color: Color(0xffC5C5C5))),
-            focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-                borderSide: BorderSide(width: 2, color: Colors.deepOrangeAccent)),
-            // suffixIcon: IconButton(
-            //
-            //   // onPressed:() {
-            //   //   Navigator.of(context).pushReplacement(
-            //   //     MaterialPageRoute(builder: (context) =>LocationPage())
-            //   //   );
-            //   },
-            //   icon: CustomSurffixIcon(svgIcon: "assets/icons/Discover.svg"),
-            // )
-            //suffixIcon: CustomSurffixIcon(svgIcon: "assets/icons/Discover.svg",),
-            suffixIcon: IconButton(
-                icon: SvgPicture.asset(
-                  "assets/icons/Locationpoint.svg",
-                ),
-                onPressed: () {
-                  Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(builder: (context) => Locationautofill()),
-                  );
-                }),
-          ),
-          onTap: () {
-            Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => Locationautofill()));
-          }),
-    );
-  }
+  // Padding Location() {
+  //   return Padding(
+  //     padding: const EdgeInsets.symmetric(horizontal: 20),
+  //     child: TextField(
+
+  //         //focusNode: ex,
+  //         //autofocus: false,
+  //         //initialValue: 'your initial text',
+  //         controller:
+  //             controllerLocation, // here for storing the name of farmer modify code later
+  //         showCursor: true,
+  //         keyboardType: TextInputType.streetAddress,
+  //         decoration: InputDecoration(
+  //           contentPadding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+  //           // labelText: "${widget.txt}",
+  //           hintStyle: TextStyle(color: Colors.grey),
+  //           hintText: "select location press icon ",
+  //           labelText: "${widget.txt}",
+  //           // hintText: "${widget.txt}",
+  //           // labelText: "select location press icon at right side",
+  //           labelStyle: TextStyle(fontSize: 15, color: Colors.black),
+  //           enabledBorder: OutlineInputBorder(
+  //               borderRadius: BorderRadius.circular(10),
+  //               borderSide: BorderSide(width: 2, color: Color(0xffC5C5C5))),
+  //           focusedBorder: OutlineInputBorder(
+  //               borderRadius: BorderRadius.circular(10),
+  //               borderSide:
+  //                   BorderSide(width: 2, color: Colors.deepOrangeAccent)),
+  //           // suffixIcon: IconButton(
+  //           //
+  //           //   // onPressed:() {
+  //           //   //   Navigator.of(context).pushReplacement(
+  //           //   //     MaterialPageRoute(builder: (context) =>LocationPage())
+  //           //   //   );
+  //           //   },
+  //           //   icon: CustomSurffixIcon(svgIcon: "assets/icons/Discover.svg"),
+  //           // )
+  //           //suffixIcon: CustomSurffixIcon(svgIcon: "assets/icons/Discover.svg",),
+  //           suffixIcon: IconButton(
+  //               icon: SvgPicture.asset(
+  //                 "assets/icons/Locationpoint.svg",
+  //               ),
+  //               onPressed: () {
+  //                 Navigator.of(context).pushReplacement(
+  //                   MaterialPageRoute(builder: (context) => Locationautofill()),
+  //                 );
+  //               }),
+  //         ),
+  //         onTap: () {
+  //           Navigator.of(context).pushReplacement(
+  //               MaterialPageRoute(builder: (context) => Locationautofill()));
+  //         }),
+  //   );
+  // }
 
   // for quantity of product
 
@@ -850,7 +971,8 @@ class _AddProductState extends State<AddProduct> {
           labelText: 'Enter quantity of product in Kg',
           labelStyle: TextStyle(fontSize: 17, color: Colors.grey.shade500),
           enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10), borderSide: BorderSide(width: 2, color: Color(0xffC5C5C5))),
+              borderRadius: BorderRadius.circular(10),
+              borderSide: BorderSide(width: 2, color: Color(0xffC5C5C5))),
           focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
               borderSide: BorderSide(width: 2, color: Colors.deepOrangeAccent)),
@@ -873,7 +995,8 @@ class _AddProductState extends State<AddProduct> {
           labelText: 'Enter Mobile No',
           labelStyle: TextStyle(fontSize: 17, color: Colors.grey.shade500),
           enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10), borderSide: BorderSide(width: 2, color: Color(0xffC5C5C5))),
+              borderRadius: BorderRadius.circular(10),
+              borderSide: BorderSide(width: 2, color: Color(0xffC5C5C5))),
           focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
               borderSide: BorderSide(width: 2, color: Colors.deepOrangeAccent)),
@@ -985,7 +1108,10 @@ class _AddProductState extends State<AddProduct> {
                     ),
                     Text(
                       'Add Product',
-                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: Colors.white),
+                      style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white),
                     ),
                     Icon(
                       Icons.attach_file_outlined,
@@ -1007,7 +1133,8 @@ class _AddProductState extends State<AddProduct> {
     final json = user.toJson();
     await docUser.set(json).then(
           (value) => Fluttertoast.showToast(msg: "Product added succesfully")
-              .then((value) => Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen()))),
+              .then((value) => Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => HomeScreen()))),
         );
   }
 }
