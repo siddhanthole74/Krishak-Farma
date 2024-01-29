@@ -19,35 +19,32 @@ class _LocationautofillState extends State<Locationautofill> {
   TextEditingController _searchController = TextEditingController();
   var uuid = Uuid();
   String sessionToken = "12345";
-  String apiKey="AIzaSyA0YP0uj7CM8wISZLQ3z-BluBG-f30PnBo";
- List<dynamic> placesList = [];
+  String apiKey = "AIzaSyA0YP0uj7CM8wISZLQ3z-BluBG-f30PnBo";
+  List<dynamic> placesList = [];
 
-late Map<String, dynamic>mp;
+  late Map<String, dynamic> mp;
 
   @override
-  void initState()
-  {
-     super.initState();
-     _searchController.addListener(() {
+  void initState() {
+    super.initState();
+    _searchController.addListener(() {
       onChange();
-     });
+    });
   }
 
-  void onChange()
-  {
-    if(sessionToken == null)
-      {
-        sessionToken=uuid.v4();
-
-      }
+  void onChange() {
+    if (sessionToken == null) {
+      sessionToken = uuid.v4();
+    }
 
     getSuggetions(_searchController.text);
   }
 
-  void getSuggetions(String input) async
-  {
-    String baseUrl = "https://maps.googleapis.com/maps/api/place/autocomplete/json";
-    String request = '$baseUrl?input=$input&key=$apiKey&sessiontoken=$sessionToken';
+  void getSuggetions(String input) async {
+    String baseUrl =
+        "https://maps.googleapis.com/maps/api/place/autocomplete/json";
+    String request =
+        '$baseUrl?input=$input&key=$apiKey&sessiontoken=$sessionToken';
 
     var response = await http.get(Uri.parse(request));
 
@@ -55,31 +52,17 @@ late Map<String, dynamic>mp;
     placesList.clear();
 
     // print(data);
-    if(response.statusCode == 200)
-    {
+    if (response.statusCode == 200) {
       setState(() {
-        mp=jsonDecode(response.body.toString());
+        mp = jsonDecode(response.body.toString());
         placesList.addAll(mp.values.first);
       });
-
-    }else{
+    } else {
       throw Exception("Failed to load data");
     }
 
-
-
     print(placesList);
-
-
-
-
   }
-
-
-
-
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -94,34 +77,34 @@ late Map<String, dynamic>mp;
             padding: EdgeInsets.symmetric(horizontal: 8),
             margin: EdgeInsets.only(top: 16),
             child: TextField(
-              controller: _searchController,
-              decoration: InputDecoration(
-                hintText: "Enter your location",
-                prefixIcon: Icon(Icons.location_on_outlined,
-                  color: Colors.deepOrangeAccent,
+                controller: _searchController,
+                decoration: InputDecoration(
+                  hintText: "Enter your location",
+                  prefixIcon: Icon(
+                    Icons.location_on_outlined,
+                    color: Colors.deepOrangeAccent,
+                  ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: BorderSide.none,
+                  ),
+                  filled: true,
+                  fillColor: Colors.grey[200],
                 ),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                  borderSide: BorderSide.none,
-                ),
-                filled: true,
-                fillColor: Colors.grey[200],
-              ),
-              // onChanged: (value){
-              //   placeAutocomplete(value);
-              // },
-              onEditingComplete:() {
-                // String value="default";
-                // value=_searchController.text;
-                //
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) =>
-                        AddProduct(txt: _searchController.text))
-                );
-              //
-              }
-            ),
-
+                // onChanged: (value){
+                //   placeAutocomplete(value);
+                // },
+                onEditingComplete: () {
+                  // String value="default";
+                  // value=_searchController.text;
+                  //
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              AddProduct(txt: _searchController.text)));
+                  //
+                }),
           ),
           Expanded(
             child: ListView.builder(
@@ -129,8 +112,8 @@ late Map<String, dynamic>mp;
               itemBuilder: (BuildContext context, int index) {
                 return ListTile(
                   title: Text(placesList[index]['description'].toString()),
-                  onTap: (){
-                   _searchController.text=placesList[index]['description'];
+                  onTap: () {
+                    _searchController.text = placesList[index]['description'];
                   },
                 );
               },

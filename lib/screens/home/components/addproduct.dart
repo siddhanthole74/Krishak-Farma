@@ -42,7 +42,7 @@ class _AddProductState extends State<AddProduct> {
   String endBidingDate = "";
   TimeOfDay startTime = new TimeOfDay.now();
   TimeOfDay endTime = new TimeOfDay.now();
-  var myDateFormat = DateFormat('d-MM-yyyy');
+  var myDateFormat = DateFormat('dd-MM-yyyy');
 
   final box = Hive.box<Add_data>('data');
   DateTime date = new DateTime.now();
@@ -247,9 +247,9 @@ class _AddProductState extends State<AddProduct> {
       child: Column(
         children: [
           SizedBox(height: 30),
-          Location(),
-          SizedBox(height: 30),
           Name(), // for name
+          SizedBox(height: 30),
+          Location(),
           SizedBox(height: 30),
           Product(), // for select the product
           SizedBox(height: 30),
@@ -547,31 +547,34 @@ class _AddProductState extends State<AddProduct> {
   }
 
   Widget start_date() {
-    return Container(
-      alignment: Alignment.bottomLeft,
-      decoration: BoxDecoration(
+    return GestureDetector(
+      onTap: () async {
+        DateTime? newDate = await showDatePicker(
+          context: context,
+          initialDate: DateTime.now(),
+          firstDate: DateTime(2020),
+          lastDate: DateTime(2100),
+        );
+        if (newDate == null) return;
+        setState(() {
+          startBidingDate = myDateFormat.format(newDate);
+        });
+      },
+      child: Container(
+        alignment: Alignment.bottomLeft,
+        decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
-          border: Border.all(width: 2, color: Color(0xffC5C5C5))),
-      width: 300,
-      child: TextButton(
-        onPressed: () async {
-          DateTime? newDate = await showDatePicker(
-              context: context,
-              initialDate: DateTime.now(),
-              firstDate: DateTime(2020),
-              lastDate: DateTime(2100));
-          if (newDate == Null) return;
-          setState(() {
-            // print("Sahsdkfdkjbf " + myDateFormat.format(newDate!) as DateTime);
-            // print("kjsfkrskfur : " + newDate.toString());
-            startBidingDate = myDateFormat.format(newDate!);
-          });
-        },
-        child: Text(
-          'Start Biding date :  $startBidingDate',
-          style: TextStyle(
-            fontSize: 15,
-            color: Colors.black,
+          border: Border.all(width: 2, color: Color(0xffC5C5C5)),
+        ),
+        width: 300,
+        child: TextButton(
+          onPressed: () {}, // No need for an onPressed handler here
+          child: Text(
+            'Start Biding date :  $startBidingDate',
+            style: TextStyle(
+              fontSize: 15,
+              color: Colors.black,
+            ),
           ),
         ),
       ),
@@ -579,62 +582,79 @@ class _AddProductState extends State<AddProduct> {
   }
 
   Widget end_date() {
-    return Container(
-      alignment: Alignment.bottomLeft,
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
-          border: Border.all(width: 2, color: Color(0xffC5C5C5))),
-      width: 300,
-      child: TextButton(
-        onPressed: () async {
-          DateTime? newDate = await showDatePicker(
-              context: context,
-              initialDate: DateTime.now(),
-              firstDate: DateTime(2020),
-              lastDate: DateTime(2100));
+    return GestureDetector(
+      onTap: () async {
+        DateTime? newDate = await showDatePicker(
+          context: context,
+          initialDate: DateTime.now(),
+          firstDate: DateTime(2020),
+          lastDate: DateTime(2100),
+        );
 
-          if (newDate == Null) return;
-          print(newDate.toString());
-          setState(() {
-            endBidingDate = myDateFormat.format(newDate!);
-            print(endBidingDate);
-            // endBiddindDate = endBidingDate.
-          });
-          print("akjddsc" + endBidingDate);
-        },
-        child: Text(
-          'End Biding date :  $endBidingDate',
-          style: TextStyle(
-            fontSize: 15,
-            color: Colors.black,
+        if (newDate == null) {
+          // User canceled date selection
+          return;
+        }
+
+        // print(newDate.toString());
+        setState(() {
+          endBidingDate = myDateFormat.format(newDate);
+          // print(endBidingDate);
+        });
+      },
+      child: Container(
+        alignment: Alignment.bottomLeft,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(width: 2, color: Color(0xffC5C5C5)),
+        ),
+        width: 300,
+        child: TextButton(
+          onPressed: () {}, // No need for an onPressed handler here
+          child: Text(
+            'End Biding date :  $endBidingDate',
+            style: TextStyle(
+              fontSize: 15,
+              color: Colors.black,
+            ),
           ),
         ),
       ),
     );
   }
 
-  TimeOfDay stringToTimeOfDay(String tod) {
-    final format = DateFormat.jm(); //"6:00 AM"
-
-    return TimeOfDay.fromDateTime(format.parse(tod));
+  TimeOfDay stringToTimeOfDay(String timeString) {
+    final format =
+        DateFormat.jm(); // Assuming your time string is in "hh:mm AM/PM" format
+    DateTime dateTime = format.parse(timeString);
+    return TimeOfDay.fromDateTime(dateTime);
   }
 
   Widget startBidingTime() {
     return Container(
       alignment: Alignment.bottomLeft,
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
-          border: Border.all(width: 2, color: Color(0xffC5C5C5))),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(width: 2, color: Color(0xffC5C5C5)),
+      ),
       width: 300,
       child: TextButton(
         onPressed: () async {
           TimeOfDay? newTime = await showTimePicker(
             context: context,
-            initialTime: stringToTimeOfDay(startTime.format(context)),
+            initialTime: startTime,
+            builder: (BuildContext context, Widget? child) {
+              return MediaQuery(
+                data: MediaQuery.of(context)
+                    .copyWith(alwaysUse24HourFormat: false),
+                child: child!,
+              );
+            },
           );
+
           if (newTime != null) {
             setState(() {
-              startTime = stringToTimeOfDay(newTime.format(context));
+              startTime = newTime;
             });
           }
         },
@@ -649,22 +669,61 @@ class _AddProductState extends State<AddProduct> {
     );
   }
 
+  // Widget startBidingTime() {
+  //   return Container(
+  //     alignment: Alignment.bottomLeft,
+  //     decoration: BoxDecoration(
+  //         borderRadius: BorderRadius.circular(10),
+  //         border: Border.all(width: 2, color: Color(0xffC5C5C5))),
+  //     width: 300,
+  //     child: TextButton(
+  //       onPressed: () async {
+  //         TimeOfDay? newTime = await showTimePicker(
+  //           context: context,
+  //           initialTime: stringToTimeOfDay(startTime.format(context)),
+  //         );
+  //         if (newTime != null) {
+  //           setState(() {
+  //             startTime = stringToTimeOfDay(newTime.format(context));
+  //           });
+  //         }
+  //       },
+  //       child: Text(
+  //         'Starting Biding Time :  ${startTime.format(context)}',
+  //         style: TextStyle(
+  //           fontSize: 15,
+  //           color: Colors.black,
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
   Widget endBidingTime() {
     return Container(
       alignment: Alignment.bottomLeft,
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
-          border: Border.all(width: 2, color: Color(0xffC5C5C5))),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(width: 2, color: Color(0xffC5C5C5)),
+      ),
       width: 300,
       child: TextButton(
         onPressed: () async {
-          TimeOfDay? newtime = await showTimePicker(
+          TimeOfDay? newTime = await showTimePicker(
             context: context,
-            initialTime: stringToTimeOfDay(endTime.format(context)),
+            initialTime: endTime,
+            builder: (BuildContext context, Widget? child) {
+              return MediaQuery(
+                data: MediaQuery.of(context)
+                    .copyWith(alwaysUse24HourFormat: false),
+                child: child!,
+              );
+            },
           );
-          if (newtime != null) {
-            endTime = stringToTimeOfDay(newtime.format(context));
-            ;
+
+          if (newTime != null) {
+            setState(() {
+              endTime = newTime;
+            });
           }
         },
         child: Text(
@@ -677,6 +736,35 @@ class _AddProductState extends State<AddProduct> {
       ),
     );
   }
+
+  // Widget endBidingTime() {
+  //   return Container(
+  //     alignment: Alignment.bottomLeft,
+  //     decoration: BoxDecoration(
+  //         borderRadius: BorderRadius.circular(10),
+  //         border: Border.all(width: 2, color: Color(0xffC5C5C5))),
+  //     width: 300,
+  //     child: TextButton(
+  //       onPressed: () async {
+  //         TimeOfDay? newtime = await showTimePicker(
+  //           context: context,
+  //           initialTime: stringToTimeOfDay(endTime.format(context)),
+  //         );
+  //         if (newtime != null) {
+  //           endTime = stringToTimeOfDay(newtime.format(context));
+  //           ;
+  //         }
+  //       },
+  //       child: Text(
+  //         'Ending Biding Time :  ${endTime.format(context)}',
+  //         style: TextStyle(
+  //           fontSize: 15,
+  //           color: Colors.black,
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
 
   Padding How() {
     return Padding(
@@ -800,61 +888,83 @@ class _AddProductState extends State<AddProduct> {
       ),
     );
   }
-Padding Location() {
-  String currentLocation = ''; // Variable to store the current location
 
-  // Fetch the user's current location during widget initialization
-  getCurrentLocation().then((location) {
-    if (location.isNotEmpty) {
-      currentLocation = location;
-      // Update the placeholder text of the TextField
-      controllerLocation.text = currentLocation;
+  Padding Location() {
+    String currentLocation = ''; // Variable to store the current location
+
+    // Fetch the user's current location during widget initialization
+    // print("The text is"+widget.txt);
+    // Fetch the user's current location during widget initialization
+    if (widget.txt == "") {
+      getCurrentLocation().then((location) {
+        if (location.isNotEmpty) {
+          currentLocation = location;
+          controllerLocation.text = currentLocation;
+          widget.txt = currentLocation;
+          print("The loc is " + widget.txt);
+        }
+      });
+    } else {
+      controllerLocation.text = widget.txt;
     }
-  });
 
-  return Padding(
-    padding: const EdgeInsets.symmetric(horizontal: 20),
-    child: TextField(
-      controller: controllerLocation,
-      showCursor: true,
-      keyboardType: TextInputType.streetAddress,
-      decoration: InputDecoration(
-        contentPadding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-        hintStyle: TextStyle(color: Colors.grey),
-        hintText: currentLocation.isNotEmpty
-            ? currentLocation
-            : "Select location or tap to autofill",
-        labelText: "${widget.txt}",
-        labelStyle: TextStyle(fontSize: 15, color: Colors.black),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-          borderSide: BorderSide(width: 2, color: Color(0xffC5C5C5)),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: TextField(
+        controller: controllerLocation,
+        showCursor: true,
+        keyboardType: TextInputType.streetAddress,
+        decoration: InputDecoration(
+          contentPadding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+          hintStyle: TextStyle(color: Colors.grey),
+          hintText: "Select location or tap to autofill",
+          labelText: "Location",
+          labelStyle: TextStyle(fontSize: 15, color: Colors.black),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: BorderSide(width: 2, color: Color(0xffC5C5C5)),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: BorderSide(width: 2, color: Colors.deepOrangeAccent),
+          ),
+          suffixIcon: IconButton(
+            icon: SvgPicture.asset("assets/icons/Locationpoint.svg"),
+            onPressed: () async {
+              // Navigate to the Locationautofill page when the TextField is tapped
+              // Fetch the user's current location when the TextField is tapped
+              String result = await Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Locationautofill()),
+              );
+
+              // Update the TextField with the obtained location
+              if (result != null && result.isNotEmpty) {
+                controllerLocation.text = widget.txt;
+              }
+            },
+          ),
         ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-          borderSide: BorderSide(width: 2, color: Colors.deepOrangeAccent),
-        ),
-        suffixIcon: IconButton(
-          icon: SvgPicture.asset("assets/icons/Locationpoint.svg"),
-          onPressed: () {
-            // Navigate to the Locationautofill page when the suffix icon is tapped
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => Locationautofill()),
-            );
-          },
-        ),
+        onTap: () async {
+          // Navigate to the Locationautofill page when the TextField is tapped
+          // Fetch the user's current location when the TextField is tapped
+          String? result = await Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => Locationautofill()),
+          );
+          if (result == null) {
+            result = "Tap for location";
+          }
+          // Update the TextField with the obtained location
+          if (result != null && result.isNotEmpty) {
+            setState(() {
+              controllerLocation.text = widget.txt;
+            });
+          }
+        },
       ),
-      onTap: () {
-        // Navigate to the Locationautofill page when the TextField is tapped
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => Locationautofill()),
-        );
-      },
-    ),
-  );
-}
+    );
+  }
 
   // for location
 // Padding Location() {

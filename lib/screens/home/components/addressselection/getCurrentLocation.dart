@@ -12,7 +12,7 @@ Future<String> getCurrentLocation() async {
       desiredAccuracy: desiredAccuracy,
     );
 
-    print('Latitude: ${position.latitude}, Longitude: ${position.longitude}');
+    // print('Latitude: ${position.latitude}, Longitude: ${position.longitude}');
 
     // Reverse geocoding to get location information including landmarks
     List<Placemark> placemarks = await placemarkFromCoordinates(position.latitude, position.longitude);
@@ -25,8 +25,8 @@ Future<String> getCurrentLocation() async {
       locationInfo = 'Location information not found';
     }
   } catch (e) {
-    print('Error getting current location: $e');
-    locationInfo = 'Error getting location';
+    // print('Error getting current location: $e');
+    locationInfo = 'Error!!';
   }
 
   return locationInfo;
