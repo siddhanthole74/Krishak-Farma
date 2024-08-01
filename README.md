@@ -15,7 +15,14 @@ A few resources to get you started if this is your first Flutter project:
 For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
-![Splash  Screen](https://user-images.githubusercontent.com/100555105/215269680-64608900-6034-4945-9940-fc18f55b702c.jpeg)
+
+<div width="100%" align="center">
+  <img src="https://user-images.githubusercontent.com/100555105/215269680-64608900-6034-4945-9940-fc18f55b702c.jpeg" width="30%"></img>
+  <img src="https://user-images.githubusercontent.com/100555105/215269680-64608900-6034-4945-9940-fc18f55b702c.jpeg" width="30%"></img>
+  <img src="https://user-images.githubusercontent.com/100555105/215269680-64608900-6034-4945-9940-fc18f55b702c.jpeg" width="30%"></img>
+</div>
+
+![Splash  Screen]()
 ![Sign Up screen](https://user-images.githubusercontent.com/100555105/215269682-ffedc4a7-12e4-404d-af3f-02088192b920.jpeg)
 ![Sign In page](https://user-images.githubusercontent.com/100555105/215269688-8a34baca-5b41-46d3-ae0a-3c11b4b7de76.jpeg)
 ![Forget Password Screen](https://user-images.githubusercontent.com/100555105/215269746-957ebff6-e37c-4e03-8a7c-3eb077fb51b2.jpeg)
